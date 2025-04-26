@@ -1,0 +1,151 @@
+
+.container-produtos {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #007bff;
+}
+
+/* Estilo do formulário */
+form {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+
+
+
+form .inputs {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+}
+form .inputs .grups {
+  width: 100%;
+  height: auto;
+}
+
+form .inputs .grups label {
+  font-size: 12px; 
+}
+
+form .inputs .grups input {
+  width: 100%;
+  height: 30px;
+  border: 1px solid #b6b5b5;
+  padding: 0px 10px;
+  border-radius: 5px;
+}
+
+form .inputs select {
+  width: 100%;
+  height: 30px;
+  border: 1px solid #b6b5b5;
+  padding: 0px 10px;
+  border-radius: 5px;
+}
+
+form .categorias {
+    margin-top: 20px;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+
+
+
+
+form .categorias  textarea {
+    width: 100%;
+  resize: none;
+  height: 150px;
+  padding:5px;
+  border: 1px solid #b6b5b5;
+  border-radius: 5px;
+}
+
+
+form .categorias button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  padding: 10px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+form button:hover {
+  background-color: #0056b3;
+}
+
+
+
+
+/* Estilo da lista de produtos */
+#lista-produtos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  border: 2px solid red;
+}
+
+.produto-item {
+  width: calc(33.33% - 20px);
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  text-align: center;
+}
+
+.produto-item img {
+  width: 100px;
+  height: 100px;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.produto-item h3 {
+  font-size: 18px;
+  margin: 10px 0;
+  color: #333;
+}
+
+.produto-item p {
+  font-size: 14px;
+  color: #555;
+  margin: 5px 0;
+}
+
+.produto-item button {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.produto-item button:hover {
+  background-color: #a71d2a;
+}

@@ -1,0 +1,55 @@
+.painel-lateral {
+    width: 250px;
+    background-color: #502314;
+    color: #ecf0f1;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.cabecalho-painel {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cabecalho-painel img{
+    width: 100px;
+    height: 100px;
+}
+
+.menu-painel {
+    flex: 1;
+    padding: 10px 0px 10px 10px;
+}
+
+.item-menu {
+    width: 103%;
+    padding: 15px;
+    margin: 5px 0;
+    border: none;
+    color: white;
+    background-color: #f5ebdc00;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 8px ;
+    transition: background-color 0.3s;
+    font-weight: 500;
+    
+}
+
+.item-menu:hover {
+    background-color: #F5EBDC;
+    color: black;
+    font-weight: bold;
+}
+
+.item-menu.ativo {
+    background-color: #F5EBDC;
+    color: black;
+    font-weight: bold;
+}

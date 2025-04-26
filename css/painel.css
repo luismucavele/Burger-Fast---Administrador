@@ -1,0 +1,152 @@
+header{
+    width: 100%;
+    height: 50px;
+    border: 2px solid red;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nome-admin{
+    width: 30%;
+    height: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+.perfil{
+    width: 10%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    
+}
+
+.notficacao-icon, .perfil-icon {
+    position: relative;
+    cursor: pointer;
+    font-size: 25px;
+    color: black;
+}
+
+.notficacao-icon span {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #D62300;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+}
+
+
+
+
+
+:root {
+    --produtos: #E3F2FD; /* Azul claro - suave para produtos */
+    --categorias: #E8F5E9; /* Verde claro - natural para categorias */
+    --funcionarios: #FFF3E0; /* Laranja claro - energético para equipe */
+    --vendas: #FCE4EC; /* Rosa claro - impacto para vendas */
+    --pedidos: #EDE7F6; /* Lilás claro - atenção para pendências */
+    --texto-escuro: #2E3A59;
+    --texto-cinza: #6C757D;
+    --borda-arredondada: 12px;
+    --sombra-suave: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+
+.area-cartoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    margin-top: 30px;
+    padding: 10px;
+    border: 2px solid red;
+}
+
+.cartao {
+    border-radius: var(--borda-arredondada);
+    box-shadow: var(--sombra-suave);
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.cartao:hover {
+    transform: translateY(-5px);
+}
+
+/* Cartão de Produtos */
+.cartao-produtos {
+    background-color: white;
+    border-left: 4px solid #2196F3;
+}
+
+/* Cartão de Categorias */
+.cartao-categorias {
+    background-color: white;
+    border-left: 4px solid #4CAF50;
+}
+
+/* Cartão de Funcionários */
+.cartao-funcionarios {
+    background-color: white;
+    border-left: 4px solid #FF9800;
+}
+
+/* Cartão de Vendas */
+.cartao-vendas {
+    background-color: white;
+    border-left: 4px solid #E91E63;
+}
+
+
+.topo-cartao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.titulo-cartao {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--texto-cinza);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.icone-cartao {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+}
+
+.valor-principal {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--texto-escuro);
+    margin: 0.5rem 0;
+}
+
+@media (max-width: 768px) {
+    .area-cartoes {
+        grid-template-columns: 1fr;
+    }
+    
+}
