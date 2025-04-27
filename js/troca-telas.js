@@ -21,3 +21,8 @@ function mostrarTela(telaId) {
         botaoAtivo.classList.add('ativo');
     }
 }
+
+
+
+
+

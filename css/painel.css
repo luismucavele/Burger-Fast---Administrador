@@ -1,7 +1,6 @@
 header{
     width: 100%;
     height: 50px;
-    border: 2px solid red;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -27,7 +26,7 @@ header{
 .notficacao-icon, .perfil-icon {
     position: relative;
     cursor: pointer;
-    font-size: 25px;
+    font-size: 23px;
     color: black;
 }
 
@@ -70,9 +69,8 @@ header{
     max-width: 1200px;
     margin: 0 auto;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    margin-top: 30px;
+    margin: 30px 0px;
     padding: 10px;
-    border: 2px solid red;
 }
 
 .cartao {
@@ -89,25 +87,25 @@ header{
 /* Cartão de Produtos */
 .cartao-produtos {
     background-color: white;
-    border-left: 4px solid #2196F3;
+    border-left: 5px solid #2196F3;
 }
 
 /* Cartão de Categorias */
 .cartao-categorias {
     background-color: white;
-    border-left: 4px solid #4CAF50;
+    border-left: 5px solid #4CAF50;
 }
 
 /* Cartão de Funcionários */
 .cartao-funcionarios {
     background-color: white;
-    border-left: 4px solid #FF9800;
+    border-left: 5px solid #FF9800;
 }
 
 /* Cartão de Vendas */
 .cartao-vendas {
     background-color: white;
-    border-left: 4px solid #E91E63;
+    border-left: 5px solid #E91E63;
 }
 
 
@@ -149,4 +147,19 @@ header{
         grid-template-columns: 1fr;
     }
     
+}
+
+
+
+.linha{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 10px;
+    
+}
+
+.linha .bi-circle-fill{
+    color: green;
+    font-size: 14px;
 }

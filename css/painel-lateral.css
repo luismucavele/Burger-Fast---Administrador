@@ -5,6 +5,8 @@
     display: flex;
     flex-direction: column;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    border-bottom-right-radius: 15px;
+    border-top-right-radius: 15px;
 }
 
 .cabecalho-painel {
@@ -45,11 +47,11 @@
 .item-menu:hover {
     background-color: #F5EBDC;
     color: black;
-    font-weight: bold;
+    font-weight: 500;
 }
 
 .item-menu.ativo {
     background-color: #F5EBDC;
     color: black;
-    font-weight: bold;
+    font-weight: 500;
 }

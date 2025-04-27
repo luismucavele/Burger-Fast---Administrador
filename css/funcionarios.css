@@ -1,0 +1,133 @@
+.container-funcionario {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 12px;
+    font-family: 'Roboto', sans-serif;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); /* inputs um pouquinho maiores */
+    gap: 15px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  .form-group label {
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: black;
+    font-weight: 500;
+  }
+  .form-group input, .form-group select {
+    padding: 6px 12px; /* Aumentei o padding */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px; /* Aumentei o tamanho da fonte */
+  }
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 25px;
+  }
+  .buttons button {
+    padding: 7px 20px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+  }
+
+  .btn-cadastrar { background: #4CAF50; color: #fff; }
+  .btn-cadastrar:hover { background: #45a049; }
+  .btn-editar { background: #2196F3; color: #fff; }
+  .btn-editar:hover { background: #1e88e5; }
+  .btn-atualizar { background: #757575; color: #fff; }
+  .btn-atualizar:hover { background: #616161; }
+  .btn-apagar { background: #f44336; color: #fff; }
+  .btn-apagar:hover { background: #e53935; }
+  .search-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 20px 0;
+    gap: 10px;
+  }
+  .search-section input {
+    flex: 1;
+    min-width: 200px;
+    padding: 7px 12px; /* maior */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px; /* maior */
+  }
+  .search-section button {
+    padding: 7px 20px;
+    border: none;
+    border-radius: 6px;
+    background: #333;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .search-section button:hover {
+    background: #555;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;
+  }
+  table th, table td {
+    padding: 10px ;
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+    text-align: center;
+  }
+  table th {
+    background-color: #502314;
+    color: white;
+    
+  }
+
+
+
+
+  /* Responsividade extra */
+  @media (max-width: 600px) {
+    .buttons {
+      flex-direction: column;
+    }
+    .search-section {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+
+
+
+
+
+
+
+  
