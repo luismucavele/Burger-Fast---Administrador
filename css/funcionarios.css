@@ -5,12 +5,15 @@
     border-radius: 12px;
     font-family: 'Roboto', sans-serif;
   }
+
+
   h1 {
     text-align: center;
     margin-bottom: 20px;
     color: #333;
     font-size: 24px;
   }
+  
   .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); /* inputs um pouquinho maiores */
@@ -30,7 +33,7 @@
     padding: 6px 12px; /* Aumentei o padding */
     border: 1px solid #ccc;
     border-radius: 6px;
-    font-size: 15px; /* Aumentei o tamanho da fonte */
+    font-size: 13px; /* Aumentei o tamanho da fonte */
   }
   .buttons {
     display: flex;

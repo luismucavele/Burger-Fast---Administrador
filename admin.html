@@ -14,6 +14,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <body>
+
+
+
     <div id="aplicacao">
         <!-- Painel lateral -->
         <aside class="painel-lateral">
@@ -30,12 +33,15 @@
             </nav>
         </aside>
 
+
+
+
+
+
+
         <!-- Conteúdo principal -->
         <main class="conteudo">
             <!-- Tela de Dashboard -->
-
-
-
             <section id="Painel" class="tela">
                 <header>
                     <div class="nome-admin">
@@ -121,14 +127,15 @@
 
             <!-- Tela de Gerenciar Produtos -->
             <section id="produtos" class="tela" style="display: none;">
+
                 <div class="container-produtos ">
                     <h1>Gerenciar Produtos</h1>
-                    <form id="form-produto">
 
+                    <form id="form-produto">
                         <div class="inputs">
                             <div class="grups">
                             <label for="">Nome Produto</label>
-                            <input type="text" id="nome" placeholder="Nome do Produto" required>
+                            <input type="text" id="nome-produto" placeholder="Nome do Produto" required>
                             </div>
                             <div class="grups">
                                 <label for="">Preço</label>
@@ -138,18 +145,11 @@
                                 <label for="">Estoque</label>
                                 <input type="number" id="estoque" placeholder="Estoque" required>
                             </div>
+                           
                             <div class="grups">
-                                <label for="">Selecione a Categoria</label>
-                                <select >
-                                    <option value="" selected disabled>Selecione a categoria</option>
-                                    <option value="hamburguer">Hambúrguer</option>
-                                    <option value="frango">Frango</option>
-                                </select>
-                            </div>
-                            <div class="grups">
-                                <label for="">Selecione o Produto</label>
+                                <label for="">Selecione a categoria</label>
                                 <select id="categoria">
-                                    <option value="" selected disabled>Selecione o Produto</option>
+                                    <option value="" selected disabled>Selecione a categoria</option>
                                     <option value="hamburguer">Hambúrguer</option>
                                     <option value="frango">Frango</option>
                                     <option value="sandes">Sandes</option>
@@ -162,16 +162,15 @@
                                     <option value="destaques">Promoções</option>
                                 </select>
                             </div>
-                            
                         </div>
 
                         <div class="categorias">
-                                
                             <textarea id="descricao" placeholder="Descrição dos Igredientes"></textarea>
-                            <input type="file" id="imagem">
+                            <input type="file" id="imagem" accept="image/*" required>
                             <button type="submit">Adicionar Produto</button>
                         </div>
                     </form>
+
                     <h2>Lista de Produtos</h2>
                     <hr style="border: 1px solid rgb(173, 173, 173); width: 100%;">
                     <div id="lista-produtos"></div>
@@ -183,86 +182,95 @@
 
 
             <!-- Tela de Cadastrar Funcionários -->
-            <section id="funcionarios" class="tela" style="display: none;">
+            <form id="funcionarios" class="tela" style="display: none;">
                 <h1>Cadastrar Funcionários</h1>
             
                     <div class="container-funcionario">
+                        
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="nome">Nome:</label>
-                                <input type="text" id="nome">
+                                <input type="text" id="nome-funcionario" placeholder="Digite o nome" required>
                             </div>
                         <div class="form-group">
                             <label for="senha">Senha:</label>
-                            <input type="password" id="senha">
+                            <input type="password" id="senha"  placeholder="Digite a senha" required>
                         </div>
                         <div class="form-group">
                             <label for="salario">Salário:</label>
-                            <input type="number" id="salario">
+                            <input type="number" id="salario" placeholder="Digite o salário" required>
                         </div>
                        
-                  
-                      
-                        
                         <div class="form-group">
                             <label for="sexo">Sexo:</label>
-                            <select id="sexo">
-                            <option>Masculino</option>
-                            <option>Feminino</option>
+                            <select id="sexo" required>
+                                <option value="" disabled selected>Selecione o sexo</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Feminino">Feminino</option>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label for="usuario">Usuário:</label>
-                            <input type="text" id="usuario">
+                            <input type="text" id="usuario" placeholder="Digite o usuário" required>
                         </div>
                         <div class="form-group">
                             <label for="residencia">Residência:</label>
-                            <input type="text" id="residencia">
+                            <input type="text" id="residencia" placeholder="Digite a residência" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="nuit">Nuit:</label>
-                            <input type="text" id="nuit">
+                            <input type="text" id="nuit" placeholder="Digite o NUIT" required>
                         </div>
 
                         <div class="form-group">
                             <label for="tipo-funcionario">Tipo de Funcionário:</label>
-                            <select id="tipo-funcionario">
-                            <option>Recepcionista</option>
-                            <option>Gerente</option>
-                            <option>Outro</option>
+                            <select id="tipo-funcionario" required>
+                                <option value="" disabled selected>Selecione o tipo</option>
+                                <option value="Chef principal">Chef principal</option>
+                                <option value="Chef secundario">Chef secundário</option>
+                                <option value="Moto Boy">Moto Boy</option>
+                                <option value="Gerente">Gerente</option>
+                                <option value="Recepcionista">Recepcionista</option>
+                                <option value="Atendente">Atendente</option>
                             </select>
                         </div>
                         
                         <div class="form-group">
                             <label for="telefone">Telefone:</label>
-                            <input type="text" id="telefone">
+                            <input type="text" id="telefone" placeholder="Digite o telefone" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email:</label>
-                            <input type="email" id="email">
+                            <input type="email" id="email" placeholder="Digite o email" required>
                         </div>
 
                         <div class="form-group">
                             <label for="numero-bi">Número BI:</label>
-                            <input type="text" id="numero-bi">
+                            <input type="text" id="numero-bi" placeholder="Digite o número do BI"  required>
                         </div>
 
-                       
+                        <div class="form-group">
+                            <label for="status">Status:</label>
+                            <select id="status" required>
+                                <option value="Ativo">Ativo</option>
+                                <option value="Inativo">Inativo</option>
+                            </select>
+                        </div>
 
                         </div>
                     
                         <div class="buttons">
-                        <button class="btn-cadastrar" type="submit"><i class="bi bi-floppy-fill"></i>Cadastrar</button>
-                        <button class="btn-editar"><i class="bi bi-pencil-fill"></i> Editar</button>
-                        <button class="btn-atualizar"><i class="bi bi-arrow-clockwise"></i> Atualizar</button>
-                        <button class="btn-apagar"><i class="bi bi-trash-fill"></i> Apagar</button>
+                            <button class="btn-cadastrar" type="submit"><i class="bi bi-floppy-fill"></i> Cadastrar</button>
+                            <button class="btn-editar" type="button"><i class="bi bi-pencil-fill"></i> Editar</button>
+                            <button class="btn-atualizar" type="button" onclick="atualizarFuncionario()"><i class="bi bi-arrow-clockwise"></i> Atualizar</button>
+                            <button class="btn-apagar" type="button"><i class="bi bi-trash-fill"></i> Apagar</button>
                         </div>
                     
                         <div class="search-section">
-                        <button><i class="bi bi-search"></i> Pesquisar</button>
-                        <input type="text" placeholder="Digite para pesquisar...">
+                            <button class="btn-pesquisar" type="button"><i class="bi bi-search"></i> Pesquisar</button>
+                            <input type="text" id="pesquisar-funcionario" placeholder="Digite o ID para pesquisar...">
                         </div>
                     
                         <table>
@@ -279,41 +287,22 @@
                             <th>Residência</th>
                             <th>Sexo</th>
                             <th>Tipo de Funcionário</th>
+                            <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="lista-funcionarios">
+                            <!-- Aqui virão os dados dos funcionários cadastrados -->
                             <!-- Linhas de funcionários virão aqui -->
-                            <tr>
-                            <td>001</td>
-                            <td>Maria Silva</td>
-                            <td>maria.silva</td>
-                            <td>+258 84 123 4567</td>
-                            <td>••••••••</td>
-                            <td>11022033MZ</td>
-                            <td>maria@email.com</td>
-                            <td>35,000 MZN</td>
-                            <td>Maputo</td>
-                            <td>Feminino</td>
-                            <td>Recepcionista</td>
-                            </tr>
-                            <tr>
-                            <td>002</td>
-                            <td>João Matos</td>
-                            <td>joao.matos</td>
-                            <td>+258 87 987 6543</td>
-                            <td>••••••••</td>
-                            <td>22011055MZ</td>
-                            <td>joao@email.com</td>
-                            <td>45,000 MZN</td>
-                            <td>Matola</td>
-                            <td>Masculino</td>
-                            <td>Gerente</td>
-                            </tr>
+                          
                         </tbody>
                         </table>
                     </div>
   
-            </section>
+
+
+            </form>
+
+
 
 
 
@@ -328,10 +317,10 @@
                         <div class="inputs-categorias">
                             <div class="grups-categorias">
                             <label for="">Nome da Categoria</label>
-                            <input type="text" id="nome" placeholder="Nome da categoria" required>
+                            <input type="text" id="nome-categoria" placeholder="Nome da Categoria" required />
                             </div>
                             
-                            <input type="file" id="imagem">
+                            <input type="file" id="imagem-categoria" required />
                             <button type="submit">Adicionar categoria</button>
                             
                         </div>
@@ -358,8 +347,11 @@
         </main>
     </div>
     
+    
 
-    <script src="js/admin.js"></script>
+    <script src="js/gerenciar-produto.js"></script>
     <script src="js/troca-telas.js"></script>
+    <script src="js/funcionarios.js"></script>
+    <script src="js/gerenciar-categoria.js"></script>
 </body>
 </html>
