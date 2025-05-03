@@ -10,6 +10,9 @@ const PORT = 3000;
 
 app.use(cors());
 
+// ADICIONE ESTA LINHA para trabalhar com JSON no body
+app.use(express.json());
+
 // Configurar armazenamento de arquivos com multer
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -174,86 +177,61 @@ app.put('/api/atualizar-cliente', (req, res) => {
 
 
 
+/* === ROTAS FUNCIONÁRIOS === */
 
-
-
-
-//Rotas para Funcionários
-
-// Rota para listar funcionários (apenas os ativos)
+// Listar todos
 app.get('/api/funcionarios', (req, res) => {
-    const sql = 'SELECT * FROM funcionarios WHERE status = "Ativo"';
-    db.query(sql, (err, results) => {
-        if (err) return res.status(500).send(err);
+    db.query('SELECT * FROM funcionarios', (err, results) => {
+        if (err) return res.status(500).json({ message: err.message });
         res.json(results);
     });
 });
 
-// Rota para cadastrar um funcionário
-app.post('/api/funcionarios', (req, res) => {
-    const { nome, usuario, senha, salario, sexo, residencia, nuit, tipo_funcionario, telefone, email, numero_bi, status } = req.body;
-
-    const sql = `
-        INSERT INTO funcionarios (nome, usuario, senha, salario, sexo, residencia, nuit, tipo_funcionario, telefone, email, numero_bi, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-    db.query(sql, [nome, usuario, senha, salario, sexo, residencia, nuit, tipo_funcionario, telefone, email, numero_bi, status], (err, result) => {
-        if (err) return res.status(500).send(err);
-        res.send('Funcionário cadastrado com sucesso!');
+// Buscar por ID
+app.get('/api/funcionarios/:id', (req, res) => {
+    db.query('SELECT * FROM funcionarios WHERE id = ?', [req.params.id], (err, result) => {
+        if (err) return res.status(500).json({ message: err.message });
+        if (result.length === 0)
+            return res.status(404).json({ message: 'Funcionário não encontrado.' });
+        res.json(result[0]);
     });
 });
 
-// Rota para atualizar um funcionário
-app.put('/api/funcionarios/:id', (req, res) => {
-    const { id } = req.params;
+// Cadastrar novo funcionário
+app.post('/api/funcionarios', (req, res) => {
     const { nome, usuario, senha, salario, sexo, residencia, nuit, tipo_funcionario, telefone, email, numero_bi, status } = req.body;
+    const sql = `
+        INSERT INTO funcionarios
+        (nome, usuario, senha, salario, sexo, residencia, nuit, tipo_funcionario, telefone, email, numero_bi, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    db.query(sql, [nome, usuario, senha, salario, sexo, residencia, nuit, tipo_funcionario, telefone, email, numero_bi, status], (err, result) => {
+        if (err) return res.status(500).json({ message: 'Erro ao cadastrar funcionário', error: err.message });
+        res.status(201).json({ message: 'Funcionário cadastrado com sucesso!' });
+    });
+});
 
+// Atualizar funcionário
+app.put('/api/funcionarios/:id', (req, res) => {
+    const { nome, usuario, senha, salario, sexo, residencia, nuit, tipo_funcionario, telefone, email, numero_bi, status } = req.body;
     const sql = `
         UPDATE funcionarios
         SET nome = ?, usuario = ?, senha = ?, salario = ?, sexo = ?, residencia = ?, nuit = ?, tipo_funcionario = ?, telefone = ?, email = ?, numero_bi = ?, status = ?
         WHERE id = ?
     `;
-    db.query(sql, [nome, usuario, senha, salario, sexo, residencia, nuit, tipo_funcionario, telefone, email, numero_bi, status, id], (err, result) => {
-        if (err) return res.status(500).send(err);
-        res.send('Funcionário atualizado com sucesso!');
+    db.query(sql, [nome, usuario, senha, salario, sexo, residencia, nuit, tipo_funcionario, telefone, email, numero_bi, status, req.params.id], (err, result) => {
+        if (err) return res.status(500).json({ message: 'Erro ao atualizar funcionário', error: err.message });
+        res.json({ message: 'Funcionário atualizado com sucesso!' });
     });
 });
 
-// Rota para alterar o status de um funcionário (deletar logicamente)
+// "Excluir" (apagar logicamete: status = Inativo)
 app.delete('/api/funcionarios/:id', (req, res) => {
-    const { id } = req.params;
-
-    const sql = 'UPDATE funcionarios SET status = "Inativo" WHERE id = ?';
-    db.query(sql, [id], (err, result) => {
-        if (err) return res.status(500).send(err);
-        res.send('Funcionário marcado como inativo!');
+    db.query('UPDATE funcionarios SET status = "Inativo" WHERE id = ?', [req.params.id], (err, result) => {
+        if (err) return res.status(500).json({ message: 'Erro ao excluir funcionário', error: err.message });
+        res.json({ message: 'Funcionário excluído com sucesso!' });
     });
 });
-
-// Rota para buscar um funcionário por ID
-app.get('/api/funcionarios/:id', (req, res) => {
-    const { id } = req.params;
-
-    const sql = 'SELECT * FROM funcionarios WHERE id = ?';
-    db.query(sql, [id], (err, result) => {
-        if (err) return res.status(500).send(err);
-        if (result.length === 0) return res.status(404).send('Funcionário não encontrado.');
-        res.json(result[0]);
-    });
-});
-
-// Rota para alterar o status de um funcionário (deletar logicamente)
-app.delete('/api/funcionarios/:id', (req, res) => {
-    const { id } = req.params;
-
-    const sql = 'UPDATE funcionarios SET status = "Inativo" WHERE id = ?';
-    db.query(sql, [id], (err, result) => {
-        if (err) return res.status(500).send(err);
-        res.send('Funcionário marcado como inativo!');
-    });
-});
-
-
 
 
 
