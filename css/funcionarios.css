@@ -133,4 +133,78 @@
 
 
 
-  
+  .tr-funcionario {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.tr-funcionario.selected {
+    background: #50231457; /* cor de destaque, altere se quiser */
+}
+.tr-funcionario:hover {
+    background: #50231457; /* cor ao passar o mouse */
+}
+
+
+
+
+/* Container das mensagens */
+.mensagens-container {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Mensagem base */
+.mensagem {
+  min-width: 250px;
+  max-width: 330px;
+  color: #333;
+  background: #fffbe6;
+  border-left: 5px solid #ffca28;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  font-size: 1rem;
+  padding: 12px 20px 12px 14px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.25s, border 0.25s;
+  animation: fadeIn 0.4s;
+  position: relative;
+}
+
+.mensagem button {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 1.1em;
+  cursor: pointer;
+  margin-left: 12px;
+}
+
+/* Tipos de mensagem */
+.mensagem.sucesso {
+  background-color: #e6ffed;
+  border-left-color: #43c767;
+  color: #20753c;
+}
+.mensagem.erro {
+  background-color: #ffeaea;
+  border-left-color: #e53935;
+  color: #ad2323;
+}
+.mensagem.info {
+  background-color: #e8f4fd;
+  border-left-color: #1976d2;
+  color: #1261a9;
+}
+
+/* Animação */
+@keyframes fadeIn {
+  from { opacity: 0; right: 10px; }
+  to { opacity: 1; right: 30px; }
+}

@@ -1,5 +1,7 @@
-const API_URL = 'http://localhost:3000/api/funcionarios';
 let funcionarioSelecionado = null;
+let linhaSelecionada = null; // Para destacar linha na tabela
+
+const API_URL = 'http://localhost:3000/api/funcionarios';
 
 // Função para mostrar mensagens
 function mostrarMensagem(mensagem, tipo = 'info') {
@@ -36,9 +38,10 @@ async function carregarFuncionarios() {
         
         const funcionarios = await response.json();
         
-        lista.innerHTML = funcionarios.length > 0 
-            ? funcionarios.map(func => `
-                <tr data-id="${func.id}" onclick="selecionarFuncionario(${func.id})">
+        const ativos = funcionarios.filter(func => func.status === 'Ativo');
+        lista.innerHTML = ativos.length > 0
+            ? ativos.map(func => `
+                <tr data-id="${func.id}" class="tr-funcionario" onclick="selecionarFuncionario(${func.id})">
                     <td>${func.id}</td>
                     <td>${func.nome || '-'}</td>
                     <td>${func.usuario || '-'}</td>
@@ -50,14 +53,15 @@ async function carregarFuncionarios() {
                     <td>${func.residencia || '-'}</td>
                     <td>${func.sexo || '-'}</td>
                     <td>${func.tipo_funcionario || '-'}</td>
-                    <td class="status ${func.status === 'Ativo' ? 'ativo' : 'inativo'}">
-                        ${func.status || '-'}
+                    <td class="status ativo">
+                        Ativo
                     </td>
                 </tr>
             `).join('')
-            : '<tr><td colspan="12">Nenhum funcionário cadastrado</td></tr>';
+            : '<tr><td colspan="12">Nenhum funcionário ativo cadastrado</td></tr>';
 
-        atualizarTotalFuncionarios(funcionarios.length);
+            const totalAtivos = funcionarios.filter(func => func.status === 'Ativo').length;
+            atualizarTotalFuncionarios(totalAtivos);
     } catch (error) {
         console.error('Erro:', error);
         mostrarMensagem(error.message, 'erro');
@@ -136,15 +140,26 @@ async function cadastrarFuncionario(event) {
 // Selecionar funcionário para edição
 async function selecionarFuncionario(id) {
     try {
+        // Remover destaque antigo e marcar novo
+        if (linhaSelecionada) {
+            linhaSelecionada.classList.remove('selected');
+        }
+        const lista = document.getElementById('lista-funcionarios');
+        linhaSelecionada = lista.querySelector(`tr[data-id="${id}"]`);
+        if (linhaSelecionada) {
+            linhaSelecionada.classList.add('selected');
+        }
+
         const response = await fetch(`${API_URL}/${id}`);
         if (!response.ok) throw new Error(`Erro: ${response.status}`);
         
         const funcionario = await response.json();
         
-        // Preencher formulário
+        // Preencher formulário e mostrar a senha
         document.getElementById('nome-funcionario').value = funcionario.nome || '';
         document.getElementById('usuario').value = funcionario.usuario || '';
         document.getElementById('senha').value = funcionario.senha || '';
+        document.getElementById('senha').type = 'text'; // Mostrar a senha ao editar funcionário
         document.getElementById('salario').value = funcionario.salario || '';
         document.getElementById('sexo').value = funcionario.sexo || '';
         document.getElementById('residencia').value = funcionario.residencia || '';
@@ -155,11 +170,8 @@ async function selecionarFuncionario(id) {
         document.getElementById('numero-bi').value = funcionario.numero_bi || '';
         document.getElementById('status').value = funcionario.status || '';
         
-        // Armazenar ID do funcionário selecionado
         funcionarioSelecionado = id;
         document.getElementById('funcionarios').setAttribute('data-id', id);
-        
-        // Atualizar interface
         document.querySelector('.btn-cadastrar').style.display = 'none';
         document.querySelector('.btn-atualizar').style.display = 'inline-block';
         
@@ -169,6 +181,7 @@ async function selecionarFuncionario(id) {
         mostrarMensagem(error.message, 'erro');
     }
 }
+
 
 // Atualizar funcionário
 async function atualizarFuncionario() {
@@ -287,13 +300,6 @@ async function pesquisarFuncionario() {
             </tr>
         `;
         
-        // Adicionar botão para voltar
-        const btnVoltar = document.createElement('button');
-        btnVoltar.className = 'btn-voltar';
-        btnVoltar.innerHTML = '<i class="bi bi-arrow-left"></i> Voltar para todos';
-        btnVoltar.onclick = carregarFuncionarios;
-        
-        lista.parentNode.insertBefore(btnVoltar, lista);
         
         mostrarMensagem('Funcionário encontrado!', 'sucesso');
     } catch (error) {
@@ -307,7 +313,15 @@ function limparFormulario() {
     document.getElementById('funcionarios').reset();
     document.getElementById('funcionarios').removeAttribute('data-id');
     funcionarioSelecionado = null;
-    
+
+    // Retornar o input de senha para tipo password
+    document.getElementById('senha').type = 'password';
+
+    // Remover destaque da linha na tabela
+    if (linhaSelecionada) {
+        linhaSelecionada.classList.remove('selected');
+        linhaSelecionada = null;
+    }
     document.querySelector('.btn-cadastrar').style.display = 'inline-block';
     document.querySelector('.btn-atualizar').style.display = 'none';
 }
