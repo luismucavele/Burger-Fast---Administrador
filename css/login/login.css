@@ -1,0 +1,227 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #502314 0%, #8b4a2f 50%, #d99b73 100%);
+
+
+}
+.cartao-login {
+    width: 730px;
+    max-width: 98vw;
+    height: 470px;
+    display: flex;
+    flex-direction: row;
+    border-radius: 22px;
+    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.10), 0 1.5px 3px rgba(0,0,0,0.12);
+    overflow: hidden;
+    align-items: stretch;
+    transition: width 0.2s;
+}
+.lado-logo {
+    background: linear-gradient(135deg, #502314 0%, #75381f 100%);
+    flex: 1 1 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding: 0 36px;
+    min-width: 210px;
+    transition: min-width 0.2s;
+}
+.logo {
+    text-align: center;
+}
+.lado-logo img {
+    width: 105px;
+    height: 105px;
+    border-radius: 22px;
+    margin-bottom: 18px;
+}
+.texto-logo {
+    font-size: 2.1em;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color:#ffffff;
+}
+.lado-formulario {
+    background: #F5EBDC;
+    flex: 1 1 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 38px;
+    position: relative;
+}
+.formulario-login {
+    width: 100%;
+    max-width: 310px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+.logo-mobile {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.logo-mobile img {
+    width: 74px;
+    height: 74px;
+    border-radius: 16px;
+    margin-bottom: 7px;
+}
+.texto-logo-mobile {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #502314;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+.titulo-login {
+    text-align: center;
+    color: #502314;
+    margin-bottom: 18px;
+    font-size: 1.25em;
+    letter-spacing: 0.7px;
+    font-weight: 600;
+}
+.grupo-campo {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.campo {
+    background: #f6f5fa;
+    border: 1px solid #ece4ec;
+    padding: 12px 40px 12px 42px;
+    width: 100%;
+    border-radius: 30px;
+    font-size: 15px;
+    color: #332d36;
+    outline: none;
+    transition: border 0.2s;
+    box-shadow: none;
+}
+.campo:focus {
+    border: 1.5px solid #502314;
+}
+.icone {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #502314;
+    font-size: 1.14em;
+}
+.botao-campo-visivel {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    outline: none;
+    color: #502314;
+    font-size: 1.18em;
+    cursor: pointer;
+}
+.botao-login {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 68px;
+    background: linear-gradient(to right, #502314, #7a3e2c);
+    color: white;
+    font-size: 1.05em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.24s, filter 0.19s;
+    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+}
+
+.botao-login:hover, .botao-login:focus {
+    filter: brightness(0.96) saturate(112%);
+}
+.mensagem-erro {
+    background: #fbeaea;
+    color: #e24f4f;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    font-size: 0.97em;
+    display: none;
+    text-align: center;
+    letter-spacing: 0.06em;
+}
+.opcoes {
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    font-size: 0.95em;
+}
+
+/* ------------------- RESPONSIVO ---------------------- */
+@media (max-width: 900px) {
+    .cartao-login {
+        width: 95vw;
+        max-width: 730px;
+        min-width: 0;
+        height: 430px;
+    }
+    .lado-logo, .lado-formulario {
+        padding: 0 10px;
+    }
+}
+/* Layout mobile: coluna e oculta a logo bg colorida */
+@media (max-width: 670px) {
+    .cartao-login {
+        flex-direction: column;
+        width: 97vw;
+        min-width: 0;
+        height: auto;
+        align-items: center;
+    }
+    .lado-logo {
+        display: none !important; /* Esconde a lateral com fundo colorido e logo */
+    }
+    .lado-formulario {
+        width: 100%;
+        padding: 17px 8vw 20px 8vw;
+        border-radius: unset;
+        align-items: center;
+        min-height: 0;
+        justify-content: center;
+    }
+    .logo-mobile {
+        display: flex;
+    }
+    .formulario-login {
+        max-width: 99vw;
+    }
+}
+@media (max-width: 400px) {
+    .logo-mobile img {
+        width: 46px;
+        height: 46px;
+    }
+    .lado-logo {
+        display: none;
+    }
+    .texto-logo-mobile {
+        font-size: 1.0em;
+    }
+}

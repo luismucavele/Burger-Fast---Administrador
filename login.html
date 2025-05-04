@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burger Fast - Login</title>
+    <link rel="stylesheet" href="css/login/login.css">
+    <link rel="shortcut icon" href="img/shortcut icon.png" type="image/x-icon">
+    <!-- Bootstrap Icons CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    
+</head>
+<body>
+    <div class="cartao-login">
+        <div class="lado-logo">
+            <div class="logo">
+                <img src="img/shortcut icon.png" alt="Logo"/>
+                <div class="texto-logo">Burger Fast</div>
+            </div>
+        </div>
+        <div class="lado-formulario"> 
+            <div class="logo-mobile">
+                <img src="img/shortcut icon.png" alt="Logo"/>
+                <div class="texto-logo-mobile">Burger Fast</div>
+            </div>
+            <form class="formulario-login" autocomplete="off" onsubmit="return validarLogin(event);">
+                <h2 class="titulo-login">Entre na sua conta</h2>
+                <div class="grupo-campo">
+                    <i class="bi bi-person-fill icone"></i>
+                    <input type="text" class="campo" id="usuario" placeholder="Usuário" autofocus required>
+                </div>
+                <div class="grupo-campo">
+                    <i class="bi bi-lock-fill icone"></i>
+                    <input type="password" class="campo" id="senha" placeholder="Senha" required>
+                    <button type="button" class="botao-campo-visivel" tabindex="-1" onclick="toggleSenha(this)">
+                        <i class="bi bi-eye-fill"></i>
+                    </button>
+                </div>
+                <div class="opcoes">
+                    <div>
+                        <input type="checkbox" id="lembrar">
+                        <label for="lembrar" style="color:#857c89;">Lembrar-me</label>
+                    </div>
+                </div>
+                <button type="submit" class="botao-login">ENTRAR</button>
+                <div class="mensagem-erro" id="mensagem-erro"></div>
+            </form>
+        </div>
+    </div>
+    <script src="js/login/validacao.js"></script>
+</body>
+</html>

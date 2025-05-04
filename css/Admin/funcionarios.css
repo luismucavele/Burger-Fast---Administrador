@@ -1,7 +1,7 @@
 .container-funcionario {
     max-width: 1200px;
     margin: auto;
-    padding: 20px;
+    padding: 10px;
     border-radius: 12px;
     font-family: 'Roboto', sans-serif;
   }
@@ -145,7 +145,7 @@
 }
 
 
-
+ 
 
 /* Container das mensagens */
 .mensagens-container {

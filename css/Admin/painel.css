@@ -7,11 +7,19 @@ header{
 }
 
 .nome-admin{
-    width: 30%;
+    width: 40%;
     height: 100%;
     display: flex;
     justify-content: start;
     align-items: center;
+    text-align: center;
+    border: 2px solid  red;
+    gap: 10px;
+    padding: 0px 10px;
+}
+
+.nome-admin p{
+    color: var(--texto-escuro);
 }
 .perfil{
     width: 10%;
