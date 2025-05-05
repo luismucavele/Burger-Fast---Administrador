@@ -22,6 +22,10 @@ function mostrarTela(telaId) {
     }
 }
 
+function logoutFuncionario() {
+    window.location.href = "login.html";
+}
+
 
 
 

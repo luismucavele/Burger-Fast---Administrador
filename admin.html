@@ -29,6 +29,7 @@
                 <button class="item-menu" onclick="mostrarTela('funcionarios')"> <i class="bi bi-person-badge" style="font-size: 25px;"></i> Gerenciar Funcionários</button>
                 <button class="item-menu" onclick="mostrarTela('categorias')"> <i class="bi bi-shop-window" style="font-size: 25px;"></i> Gerenciar categorias</button>
                 <button class="item-menu" onclick="mostrarTela('vendas')"> <i class="bi bi-clipboard-data" style="font-size: 25px;"></i> Relatório de Vendas</button>
+                <button class="item-menu"  onclick="logoutFuncionario()" title="Sair"> <i class="bi bi-box-arrow-right" style="font-size: 25px;"></i> Sair</button>
               
             </nav>
         </aside>
@@ -347,6 +348,9 @@
         </main>
     </div>
     
+    <!-- Container de mensagens de erro -->
+<div class="mensagens-container"></div>
+
     
  
     <script src="js/admin/funcionarios.js"></script>

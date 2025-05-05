@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burger Fast - Funcionário</title>
+    <link rel="stylesheet" href="css/Funcion/funcion.css">
+    <link rel="shortcut icon" href="img/shortcut icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+    <div id="aplicacao-funcionario">
+        <aside class="painel-lateral-funcionario">
+            <div class="cabecalho-painel">
+               <img src="img/shortcut icon.png" alt="">
+            </div>
+            <nav class="menu-painel">
+                <button class="item-menu ativo" onclick="mostrarTelaFunc('Pedidos')">
+                    <i class="bi bi-clipboard-check"></i> <span>Pedidos</span>
+                </button>
+                <button class="item-menu" onclick="mostrarTelaFunc('Estoque')">
+                    <i class="fa fa-boxes-stacked"></i> <span>Estoque</span>
+                </button>
+                <button class="item-menu" onclick="mostrarTelaFunc('Atendimento')">
+                    <i class="bi bi-chat-dots-fill"></i> <span>Atendimento</span>
+                </button>
+                <button class="item-menu"  onclick="logoutFuncionario()" title="Sair"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></button>
+            </nav>
+        </aside>
+
+
+        <main class="conteudo-func">
+            <!-- PEDIDOS PROFISSIONAL -->
+            <section id="Pedidos" class="tela-func">
+                <header>
+                    <div class="identidade-func">
+                        <p>Funcionário:</p> <p id="user-func"></p>
+                    </div>
+                
+                </header>
+
+                <h3>Pedidos em Tempo Real</h3>
+                <div class="filtros-pedidos">
+                    <input type="search" id="pesquisar-pedido" placeholder="Buscar por cliente" oninput="filtrarPedidos()">
+                    <div class="abas-status">
+                        <button class="aba-status ativo" data-status="todos" onclick="filtrarAbasStatus(this)">Todos</button>
+                        <button class="aba-status" data-status="pendente" onclick="filtrarAbasStatus(this)">Pendentes</button>
+                        <button class="aba-status" data-status="empreparo" onclick="filtrarAbasStatus(this)">Em Preparo</button>
+                        <button class="aba-status" data-status="pronto" onclick="filtrarAbasStatus(this)">Prontos</button>
+                        <button class="aba-status" data-status="entregue" onclick="filtrarAbasStatus(this)">Entregues</button>
+                    </div>
+                </div>
+
+                <div id="pedidos-lista" class="profissional-loading-box">
+                    <div class="loading-profissional" id="pedidos-loading" style="display:none;">Carregando pedidos...</div>
+                    <!-- Conteúdo dinâmico de pedidos será preenchido via JS -->
+                </div>
+            </section>
+
+            <!-- ESTOQUE PROFISSIONAL -->
+            <section id="Estoque" class="tela-func" style="display:none;">
+                <h2>Estoque Atual</h2>
+                <div id="estoque-lista" class="profissional-loading-box">
+                    <div class="loading-profissional" id="estoque-loading" style="display:none;">Carregando estoque...</div>
+                </div>
+            </section>
+
+            <!-- ATENDIMENTO -->
+            <section id="Atendimento" class="tela-func" style="display:none;">
+                <h2>Atendimento ao Cliente</h2>
+                <div id="atendimento-chat" class="chat-placeholder">
+                    <i class="bi bi-chat-dots-fill"></i>
+                    <p>Em breve: Módulo de mensagens/chamados estará disponível para atendimento aos clientes.</p>
+                </div>
+            </section>
+
+          
+        </main>
+    </div>
+    <script src="js/funcio/funcio.js"></script>
+</body>
+</html>  

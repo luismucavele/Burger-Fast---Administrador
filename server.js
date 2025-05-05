@@ -93,6 +93,13 @@ app.delete('/api/produtos/:id', (req, res) => {
 
 
 
+
+
+
+
+
+
+
 //LOGIN DO CLENTE 
 
 // Rota para registrar um novo cliente
@@ -146,6 +153,10 @@ app.post('/api/login', (req, res) => {
 
 
 
+
+
+
+
 //Perfil do cliente
 
 // Rota para atualizar os dados do cliente
@@ -170,6 +181,15 @@ app.put('/api/atualizar-cliente', (req, res) => {
         res.status(200).json({ message: 'Dados atualizados com sucesso!' });
     });
 });
+
+
+
+
+
+
+
+
+
 
 
 
@@ -232,6 +252,45 @@ app.delete('/api/funcionarios/:id', (req, res) => {
         res.json({ message: 'Funcionário excluído com sucesso!' });
     });
 });
+
+
+// Login do funcionário
+
+app.post('/api/login-funcionario', (req, res) => {
+    const { usuario, senha } = req.body;
+
+    if (!usuario || !senha) {
+        return res.status(400).json({ error: 'Usuário e senha são obrigatórios.' });
+    }
+
+    // Procura usuário exato
+    const sql = 'SELECT * FROM funcionarios WHERE usuario = ? LIMIT 1';
+    db.query(sql, [usuario], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Erro no banco de dados.' });
+
+        if (results.length === 0)
+            return res.status(401).json({ error: 'Usuário não encontrado.' });
+
+        // Checa senha (importante: com hash em produção)
+        const funcionario = results[0];
+        if (funcionario.senha !== senha)
+            return res.status(401).json({ error: 'Senha incorreta.' });
+
+        if (funcionario.status && funcionario.status.toLowerCase() === 'inativo')
+            return res.status(403).json({ error: 'Funcionário inativo.' });
+
+        // Retorna dados sem a senha
+        const { senha: s, ...dados } = funcionario;
+        res.json({ funcionario: dados });
+    });
+});
+
+
+
+
+
+
+
 
 
 

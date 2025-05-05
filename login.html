@@ -9,7 +9,20 @@
     <link rel="shortcut icon" href="img/shortcut icon.png" type="image/x-icon">
     <!-- Bootstrap Icons CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
-    
+    <style>
+        .mensagem-erro {
+            margin: 12px auto 0 auto;
+            text-align: center;
+            border-radius: 5px;
+            padding: 6px 12px;
+            display: none;
+            font-weight: 500;
+            font-size: 1.01em;
+            min-height: 28px;
+            transition: all 0.25s;
+            max-width: 300px;
+        }
+    </style>
 </head>
 <body>
     <div class="cartao-login">
@@ -26,13 +39,14 @@
             </div>
             <form class="formulario-login" autocomplete="off" onsubmit="return validarLogin(event);">
                 <h2 class="titulo-login">Entre na sua conta</h2>
+                <div class="mensagem-erro" id="mensagem-erro"></div>
                 <div class="grupo-campo">
                     <i class="bi bi-person-fill icone"></i>
                     <input type="text" class="campo" id="usuario" placeholder="Usuário" autofocus required>
                 </div>
                 <div class="grupo-campo">
                     <i class="bi bi-lock-fill icone"></i>
-                    <input type="password" class="campo" id="senha" placeholder="Senha" required>
+                    <input type="password" class="campo" id="senha" placeholder="Senha" autocomplete="new-password" required>
                     <button type="button" class="botao-campo-visivel" tabindex="-1" onclick="toggleSenha(this)">
                         <i class="bi bi-eye-fill"></i>
                     </button>
@@ -44,7 +58,6 @@
                     </div>
                 </div>
                 <button type="submit" class="botao-login">ENTRAR</button>
-                <div class="mensagem-erro" id="mensagem-erro"></div>
             </form>
         </div>
     </div>

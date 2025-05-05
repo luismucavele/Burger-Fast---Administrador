@@ -52,3 +52,60 @@ body{
     color: #2c3e50;
 }
 
+
+.mensagens-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+  }
+  
+  .mensagem {
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    min-width: 250px;
+    max-width: 350px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .mensagem.sucesso {
+    background-color: #e0f7e9;
+    color: #2e7d32;
+    border-left: 5px solid #2e7d32;
+  }
+  
+  .mensagem.erro {
+    background-color: #fdecea;
+    color: #c62828;
+    border-left: 5px solid #c62828;
+  }
+  
+  .mensagem.info {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    border-left: 5px solid #1565c0;
+  }
+  
+  .mensagem button {
+    background: none;
+    border: none;
+    color: #555;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  /* Animação */
+@keyframes fadeIn {
+    from { opacity: 0; right: 10px; }
+    to { opacity: 1; right: 30px; }
+  }
+  
