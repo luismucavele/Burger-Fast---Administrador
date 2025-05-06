@@ -94,7 +94,9 @@ async function validarLogin(e) {
                 window.location.href = 'admin.html';
             } else if (data.funcionario.tipo_funcionario === 'Atendente') {
                 window.location.href = 'funcionario.html';
-            } else {
+            }else if (data.funcionario.tipo_funcionario === 'Moto Boy') {
+                window.location.href = 'motoboy.html';
+            }else {
                 mostrarMensagem('Tipo de funcionário não reconhecido.', 'erro');
             }
         }, 1100);
