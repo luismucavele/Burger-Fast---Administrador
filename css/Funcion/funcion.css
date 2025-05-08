@@ -242,6 +242,13 @@ header {
     opacity: .9;
     font-size: 1.12em;
 }
+
+
+.pedido-card.selecionado {
+    border: 2px solid #227de3;
+    background: #eef6ff;
+}
+
 @media (max-width:830px) {
     .painel-lateral-funcionario {
         width: 58px;

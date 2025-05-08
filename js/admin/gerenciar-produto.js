@@ -209,6 +209,47 @@ function mostrarMensagem(mensagem, tipo) {
     }, 5000);
 }
 
+
+
+
+//total de produtos
+/**
+ * Atualiza o card de total de produtos no dashboard admin.html
+ * Busca os produtos da base de dados via API REST
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    const totalProdutosElement = document.getElementById('total-produtos');
+
+    async function buscarTotalProdutos() {
+        try {
+            // Ajuste a URL conforme necessário para seu backend
+            const resposta = await fetch('http://localhost:3000/api/produtos');
+            if (!resposta.ok) throw new Error('Erro ao buscar produtos');
+            const produtos = await resposta.json();
+
+            // Verifica se produtos é um array
+            if (Array.isArray(produtos)) {
+                totalProdutosElement.textContent = produtos.length;
+            } else if (produtos.data && Array.isArray(produtos.data)) {
+                // Caso a API retorne { data: [...] }
+                totalProdutosElement.textContent = produtos.data.length;
+            } else {
+                totalProdutosElement.textContent = '0';
+                console.warn('Resposta inesperada da API de produtos:', produtos);
+            }
+        } catch (error) {
+            totalProdutosElement.textContent = 'Erro';
+            console.error('Erro ao buscar total de produtos:', error);
+        }
+    }
+
+    if (totalProdutosElement) {
+        buscarTotalProdutos();
+    }
+});
+
+
+
 // Adicionar listener para mudança de categoria
 document.getElementById('categoria').addEventListener('change', carregarProdutos);
 

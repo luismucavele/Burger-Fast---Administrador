@@ -40,6 +40,16 @@ db.connect(err => {
     console.log('✅ Conectado ao banco de dados!');
 });
 
+
+
+
+
+
+
+
+
+
+
 // Adicionar produto
 app.post('/api/produtos', upload.single('imagem'), (req, res) => {
     const { nome, descricao, preco, estoque, categoria } = req.body;
@@ -63,6 +73,17 @@ app.post('/api/produtos', upload.single('imagem'), (req, res) => {
     });
 });
 
+app.get('/api/produtos', (req, res) => {
+    const sql = 'SELECT * FROM produtos';
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar produtos:', err);
+            return res.status(500).json({ error: 'Erro ao buscar produtos.' });
+        }
+        res.status(200).json(results);
+    });
+});
+
 // Listar produtos por categoria
 app.get('/api/produtos/:categoria', (req, res) => {
     const { categoria } = req.params;
@@ -77,6 +98,9 @@ app.get('/api/produtos/:categoria', (req, res) => {
     });
 });
 
+
+
+
 // Deletar produto
 app.delete('/api/produtos/:id', (req, res) => {
     const { id } = req.params;
@@ -86,6 +110,10 @@ app.delete('/api/produtos/:id', (req, res) => {
         res.send('Produto deletado com sucesso!');
     });
 });
+
+
+
+
 
 
 
@@ -298,14 +326,163 @@ app.post('/api/login-funcionario', (req, res) => {
 
 
 
-//CATEGORIAS
-//Rota para Adicionar Categoria
 
 
 
 
 
 
+//PEDIDOS
+
+
+app.post('/api/pedidos', (req, res) => {
+    const { clienteEmail, itens, data } = req.body;
+
+    if (!clienteEmail || !Array.isArray(itens) || itens.length === 0) {
+        return res.status(400).json({ error: 'Dados do pedido incompletos.' });
+    }
+
+    // Busca o id do cliente pelo email
+    const buscaCliente = 'SELECT id FROM clientes WHERE email = ?';
+    db.query(buscaCliente, [clienteEmail], (err, resultadoCliente) => {
+        if (err) {
+            console.error('Erro ao buscar cliente:', err);
+            return res.status(500).json({ error: 'Erro ao buscar cliente.' });
+        }
+        if (resultadoCliente.length === 0) {
+            return res.status(404).json({ error: 'Cliente não encontrado.' });
+        }
+
+        const clienteId = resultadoCliente[0].id;
+        const totalPedido = itens.reduce((soma, i) => soma + (i.preco * i.quantidade), 0);
+
+        // Inserir novo pedido
+        const inserePedido = `
+            INSERT INTO pedidos (cliente_id, data, status, total)
+            VALUES (?, ?, 'Pendente', ?)
+        `;
+        db.query(inserePedido, [clienteId, data, totalPedido], (err, resultadoPedido) => {
+            if (err) {
+                console.error('Erro ao salvar pedido:', err);
+                return res.status(500).json({ error: 'Erro ao salvar pedido.' });
+            }
+            const pedidoId = resultadoPedido.insertId;
+
+            // Inserir todos os itens do pedido
+            const valoresItens = itens.map(item =>
+                [pedidoId, item.nome, item.descricao, item.preco, item.quantidade, item.imagem]
+            );
+            const insereItens = `
+                INSERT INTO pedido_itens
+                (pedido_id, produto_nome, descricao, preco, quantidade, imagem)
+                VALUES ?
+            `;
+            db.query(insereItens, [valoresItens], (err, resultItens) => {
+                if (err) {
+                    console.error('Erro ao salvar itens:', err);
+                    return res.status(500).json({ error: 'Erro ao salvar itens do pedido.' });
+                }
+                res.status(201).json({ message: 'Pedido realizado com sucesso!', pedidoId });
+            });
+        });
+    });
+});
+
+
+
+
+
+
+
+
+
+// Listar pedidos do cliente por email (para painel do cliente)
+app.get('/api/pedidos-cliente', (req, res) => {
+    const { email } = req.query;
+    if (!email) {
+        return res.status(400).json({ error: 'Email do cliente é obrigatório.' });
+    }
+    const sql = `
+      SELECT p.id, p.data, p.status, p.total
+      FROM pedidos p
+      JOIN clientes c ON p.cliente_id = c.id
+      WHERE c.email = ?
+      ORDER BY p.data DESC
+    `;
+    db.query(sql, [email], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Erro ao buscar pedidos.' });
+        res.json(results);
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+// Listar todos os pedidos (para painel do funcionário)
+// Rota para funcionário listar todos os pedidos com nome do cliente e itens
+app.get('/api/pedidos', (req, res) => {
+    const sql = `
+      SELECT p.id, c.nome AS cliente, c.email, c.celular AS telefone, p.data, p.status, p.total
+      FROM pedidos p
+      JOIN clientes c ON p.cliente_id = c.id
+      ORDER BY p.data DESC
+    `;
+    db.query(sql, (err, pedidos) => {
+        if (err) return res.status(500).json({ error: 'Erro ao listar pedidos.' });
+        // Agora busca os itens de cada pedido
+        const pedidoIds = pedidos.map(p => p.id);
+        if (pedidoIds.length === 0) return res.json([]);
+        const itensSql = `
+          SELECT pedido_id, produto_nome
+          FROM pedido_itens
+          WHERE pedido_id IN (?)
+        `;
+        db.query(itensSql, [pedidoIds], (err, itens) => {
+            if (err) return res.status(500).json({ error: 'Erro ao buscar itens dos pedidos.' });
+            // Agrupa itens por pedido_id
+            const mapaItens = {};
+            itens.forEach(i => {
+                if (!mapaItens[i.pedido_id]) mapaItens[i.pedido_id] = [];
+                mapaItens[i.pedido_id].push(i.produto_nome);
+            });
+            // Adiciona os itens no objeto principal
+            pedidos.forEach(p => {
+                p.itens = mapaItens[p.id] || [];
+                // Data e hora formatada para o card (opcional)
+                p.hora = new Date(p.data).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            });
+            res.json(pedidos);
+        });
+    });
+});
+
+// Rota para funcionário alterar o status do pedido
+app.put('/api/pedidos/:id/status', (req, res) => {
+    const { id } = req.params;
+    const { novoStatus } = req.body;
+
+    if (!novoStatus) {
+        return res.status(400).json({ error: 'O novo status é obrigatório.' });
+    }
+    const sql = 'UPDATE pedidos SET status = ? WHERE id = ?';
+    db.query(sql, [novoStatus, id], (err, result) => {
+        if (err) {
+            console.error('Erro ao atualizar status do pedido:', err);
+            return res.status(500).json({ error: 'Erro ao atualizar status do pedido.' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Pedido não encontrado.' });
+        }
+        res.json({ message: 'Status do pedido atualizado com sucesso!' });
+    });
+});
 
 
 

@@ -49,10 +49,10 @@
                     <input type="search" id="pesquisar-pedido" placeholder="Buscar por cliente" oninput="filtrarPedidos()">
                     <div class="abas-status">
                         <button class="aba-status ativo" data-status="todos" onclick="filtrarAbasStatus(this)">Todos</button>
-                        <button class="aba-status" data-status="pendente" onclick="filtrarAbasStatus(this)">Pendentes</button>
-                        <button class="aba-status" data-status="empreparo" onclick="filtrarAbasStatus(this)">Em Preparo</button>
-                        <button class="aba-status" data-status="pronto" onclick="filtrarAbasStatus(this)">Prontos</button>
-                        <button class="aba-status" data-status="entregue" onclick="filtrarAbasStatus(this)">Entregues</button>
+                        <button class="aba-status" data-status="pendente" onclick="filtrarAbasStatus(this); mudarStatusPedidoViaAba('pendente')">Pendentes</button>
+                        <button class="aba-status" data-status="empreparo" onclick="filtrarAbasStatus(this); mudarStatusPedidoViaAba('empreparo')">Em Preparo</button>
+                        <button class="aba-status" data-status="pronto" onclick="filtrarAbasStatus(this); mudarStatusPedidoViaAba('pronto')">Prontos</button>
+                        <button class="aba-status" data-status="entregue" onclick="filtrarAbasStatus(this); mudarStatusPedidoViaAba('entregue')">Entregues</button>
                     </div>
                 </div>
 
@@ -83,5 +83,6 @@
         </main>
     </div>
     <script src="js/funcio/funcio.js"></script>
+    <script src="authentication/nomeusuario.js"></script>
 </body>
 </html>  

@@ -1,5 +1,5 @@
 // --- Funções principais para funcionário ---
-
+let pedidoSelecionadoId = null;
 // Fluxo e rótulo dos status de pedido
 const STATUS_FLUXO = ['pendente', 'empreparo', 'pronto', 'entregue'];
 const STATUS_LABEL = {
@@ -13,6 +13,12 @@ let pedidos = [];
 let estoque = [];
 let filtroBusca = "";
 let filtroAba = "todos";
+
+
+function selecionarPedido(id) {
+    pedidoSelecionadoId = id;
+    renderPedidos();
+}
 
 // Troca de tela
 function mostrarTelaFunc(telaId) {
@@ -29,23 +35,43 @@ function mostrarTelaFunc(telaId) {
 }
 
 // -- PEDIDOS --
-
 function carregarPedidos() {
     exibirLoadingPedidos(true);
-    // Exemplo/facilitador para integração futura (trocar por fetch correspondente ao backend):
-    /*
-    fetch('/api/pedidos')
-      .then(r=>r.json())
-      .then(dados=>{
-         pedidos = dados;
-         renderPedidos();
-         exibirLoadingPedidos(false);
-      })
-      .catch(()=>{exibirErroPedidos("Falha ao carregar pedidos"); exibirLoadingPedidos(false);});
-    */
-    pedidos = []; // Limpa antes de integração (dados reais virão do backend)
-    renderPedidos();
-    exibirLoadingPedidos(false);
+    fetch('http://localhost:3000/api/pedidos')
+        .then(r => r.json())
+        .then(dados => {
+            pedidos = dados;
+            renderPedidos();
+            exibirLoadingPedidos(false);
+        })
+        .catch(() => { exibirErroPedidos("Falha ao carregar pedidos"); exibirLoadingPedidos(false); });
+}
+
+
+function editarStatusPedido(id) {
+    const pedido = pedidos.find(p => p.id === id);
+    if (!pedido) return;
+    let atualIdx = STATUS_FLUXO.indexOf(pedido.status);
+    let novoStatus;
+    if (atualIdx < STATUS_FLUXO.length - 1) novoStatus = STATUS_FLUXO[atualIdx + 1];
+    else novoStatus = STATUS_FLUXO[0];
+    // Chamada real ao backend:
+    fetch(`http://localhost:3000/api/pedidos/${id}/status`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ novoStatus })
+    })
+    .then(r => r.json())
+    .then(resp => {
+        if (resp.error) {
+            alert('Erro: ' + resp.error);
+        } else {
+            // Atualiza localmente
+            pedido.status = novoStatus;
+            renderPedidos();
+        }
+    })
+    .catch(() => alert('Erro ao atualizar status do pedido'));
 }
 
 function renderPedidos() {
@@ -73,9 +99,8 @@ function renderPedidos() {
 }
 
 function pedidoCardHTML(p) {
-    // Renderiza um cartão de pedido com status visual e botão para alterar status
     return `
-    <div class="pedido-card" data-id="${p.id}">
+    <div class="pedido-card${pedidoSelecionadoId === p.id ? ' selecionado' : ''}" data-id="${p.id}" onclick="selecionarPedido(${p.id})">
         <div>
             <span class="pedido-usuario"><i class="bi bi-person-circle"></i> ${p.cliente || '-'}</span>
             <span class="pedido-hora"><i class="bi bi-clock"></i> ${p.hora || '--:--'}</span>
@@ -88,13 +113,36 @@ function pedidoCardHTML(p) {
             ${STATUS_FLUXO.map(st =>
                 `<span class="status-pedido-step${p.status === st ? ' ativo ' + st : ''} ${st}">${STATUS_LABEL[st]}</span>`
             ).join('<span class="status-pedido-ic"><i class="bi bi-chevron-right"></i></span>')}
-            <button class="pedido-status-editar" onclick="editarStatusPedido(${p.id})"><i class="bi bi-pencil"></i> Mudar Status</button>
         </div>
         <div class="pedido-cliente-details">
             <i class="bi bi-info-circle"></i> <b>Contato:</b> ${p.telefone || '-'} | <b>Email:</b> ${p.email || '-'}
         </div>
     </div>
     `;
+}
+
+
+function mudarStatusPedidoViaAba(status) {
+    if (!pedidoSelecionadoId) {
+        alert('Selecione um pedido primeiro!');
+        return;
+    }
+    fetch(`http://localhost:3000/api/pedidos/${pedidoSelecionadoId}/status`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ novoStatus: status })
+    })
+    .then(r => r.json())
+    .then(resp => {
+        if (resp.error) {
+            alert('Erro: ' + resp.error);
+        } else {
+            const pedido = pedidos.find(p => p.id === pedidoSelecionadoId);
+            if (pedido) pedido.status = status;
+            renderPedidos();
+        }
+    })
+    .catch(() => alert('Erro ao atualizar status do pedido'));
 }
 
 // Função para editar status de um pedido (pronto para backend)
@@ -210,3 +258,4 @@ window.editarStatusPedido = editarStatusPedido;
 window.filtrarPedidos = filtrarPedidos;
 window.filtrarAbasStatus = filtrarAbasStatus;
 window.mostrarTelaFunc = mostrarTelaFunc;
+setInterval(carregarPedidos, 10000);

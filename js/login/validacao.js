@@ -91,8 +91,10 @@ async function validarLogin(e) {
         mostrarMensagem('Login realizado com sucesso! Redirecionando...', 'sucesso');
         setTimeout(() => {
             if (data.funcionario.tipo_funcionario === 'Gerente') {
+                localStorage.setItem('gerente_nome', data.funcionario.nome);
                 window.location.href = 'admin.html';
             } else if (data.funcionario.tipo_funcionario === 'Atendente') {
+                localStorage.setItem('funcionario_nome', data.funcionario.nome);
                 window.location.href = 'funcionario.html';
             }else if (data.funcionario.tipo_funcionario === 'Moto Boy') {
                 window.location.href = 'motoboy.html';
