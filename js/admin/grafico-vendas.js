@@ -26,11 +26,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         label: 'Vendas Mensais (MZN)',
                         data: totaisPorMes,
                         fill: false,
-                        borderColor: '#E91E63',
-                        backgroundColor: '#E91E63',
+                        borderColor: '#008000',
+                        backgroundColor: '#008000',
                         tension: 0.3,
                         pointBackgroundColor: '#fff',
-                        pointBorderColor: '#E91E63',
+                        pointBorderColor: '#008000',
                         pointRadius: 5,
                         pointHoverRadius: 7
                     }]
