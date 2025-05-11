@@ -259,3 +259,98 @@ header {
 @media (max-width:600px) {
     .conteudo-func { padding: 8px 1vw;}
 }
+
+
+.pedido-valor {
+    margin: 6px 0;
+    font-size: 20px;
+    color: #27ae60;
+    font-weight: bold;
+}
+
+
+
+
+
+/* Tabela de Estoque Profissional */
+
+/* Select de Categoria Estoque */
+#estoque-categoria-select {
+    padding: 2px 10px;
+    border: 1.5px solid #e3d0bc;
+    border-radius: 18px;
+    background: #f5ebdc;
+    color: #502314;
+    font-size: 1.06em;
+    font-family: 'Archivo Black', sans-serif;
+    margin-left: 8px;
+    outline: none;
+    transition: border-color 0.18s, box-shadow 0.18s;
+    box-shadow: 0 1px 6px #e3d0bc22;
+    cursor: pointer;
+}
+#estoque-categoria-select:focus {
+    border-color: #c39a6b;
+    box-shadow: 0 0 0 2px #f5ebdc88;
+}
+#estoque-categoria-select option {
+    background: #fffdfa;
+    color: #502314;
+    font-family: 'Archivo Black', sans-serif;
+}
+
+/* Ajuste para o label do select */
+label[for="estoque-categoria-select"] {
+    color: #502314;
+    font-weight: bold;
+    margin-right: 6px;
+    font-size: 1.07em;
+    letter-spacing: 0.01em;
+}
+
+
+
+.tabela-estoque {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: #fffdfa;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px #e3d0bc33;
+}
+.tabela-estoque th, .tabela-estoque td {
+    border: 1px solid #e3d0bc;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 1.03em;
+}
+.tabela-estoque th {
+    background: #f5ebdc;
+    color: #502314;
+    font-weight: bold;
+    letter-spacing: 0.03em;
+}
+.tabela-estoque tr:nth-child(even) {
+    background: #f9f3ea;
+}
+.tabela-estoque tr:hover {
+    background: #f5e0c7;
+    transition: background 0.18s;
+}
+.estoque-baixo {
+    color: #c0392b !important;
+    font-weight: bold;
+    background: #ffeaea;
+    border-radius: 6px;
+    padding: 2px 8px;
+}
+.tabela-estoque td {
+    color: #63472c;
+}
+.tabela-estoque td strong {
+    color: #2b7a25;
+}
+ strong {
+    color: #2b7a25;
+}

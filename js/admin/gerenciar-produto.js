@@ -178,10 +178,93 @@ function deletarProduto(id) {
     });
 }
 
+let produtoEmEdicao = null;
+
+// Função chamada pelo botão Editar em cada produto
 function editarProduto(id) {
-    // Implementação futura da funcionalidade de edição
-    alert('Funcionalidade de edição será implementada em breve!');
+    fetch(`http://localhost:3000/api/produtos/id/${id}`)
+        .then(resp => resp.json())
+        .then(produto => {
+            produtoEmEdicao = id;
+            document.getElementById('nome-produto').value = produto.nome;
+            document.getElementById('descricao').value = produto.descricao || '';
+            document.getElementById('preco').value = produto.preco;
+            document.getElementById('estoque').value = produto.estoque;
+            document.getElementById('categoria').value = produto.categoria;
+            document.getElementById('imagem').required = false; // Não obrigar imagem na edição
+
+            // Trocar texto do botão para salvar/atualizar
+            const submitBtn = document.querySelector('#form-produto button[type="submit"]');
+            submitBtn.textContent = 'Salvar';
+        })
+        .catch(() => mostrarMensagem('Erro ao carregar produto.', 'erro'));
 }
+
+document.getElementById('form-produto').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const nome = document.getElementById('nome-produto').value.trim();
+    const descricao = document.getElementById('descricao').value.trim();
+    const preco = document.getElementById('preco').value.trim();
+    const estoque = document.getElementById('estoque').value;
+    const categoria = document.getElementById('categoria').value;
+    const imagemInput = document.getElementById('imagem');
+
+    if (!nome || !preco || !categoria) return mostrarMensagem('Preencha os campos obrigatórios!', 'erro');
+    if (!produtoEmEdicao && imagemInput.files.length === 0) return mostrarMensagem('Selecione uma imagem!', 'erro');
+
+    // Loader
+    const submitBtn = document.querySelector('#form-produto button[type="submit"]');
+    const btnOriginal = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Salvando...';
+
+    const formData = new FormData();
+    formData.append('nome', nome);
+    formData.append('descricao', descricao);
+    formData.append('preco', preco);
+    formData.append('estoque', estoque);
+    formData.append('categoria', categoria);
+    if (imagemInput.files.length > 0) formData.append('imagem', imagemInput.files[0]);
+
+    let url = produtoEmEdicao
+        ? `http://localhost:3000/api/produtos/${produtoEmEdicao}`
+        : 'http://localhost:3000/api/produtos';
+    let method = produtoEmEdicao ? 'PUT' : 'POST';
+
+    fetch(url, {
+        method,
+        body: formData
+    })
+    .then(r => {
+        if (!r.ok) throw new Error();
+        return r.json();
+    })
+.then(res => {
+    mostrarMensagem(res.message || 'Salvo!', 'sucesso');
+    document.getElementById('form-produto').reset();
+    produtoEmEdicao = null;
+    document.getElementById('imagem').required = true;
+    submitBtn.textContent = 'Adicionar Produto'; // É AQUI QUE O TEXTO MUDA
+    carregarProdutos();
+})
+    .catch(() => mostrarMensagem('Erro ao salvar. Tente de novo.', 'erro'))
+   .finally(() => {
+    submitBtn.disabled = false;
+    submitBtn.textContent = produtoEmEdicao ? 'Salvar' : 'Adicionar Produto';
+});
+
+});
+
+
+// Se o usuário limpar os campos, cancela modo edição
+document.getElementById('form-produto').addEventListener('reset', function () {
+    produtoEmEdicao = null;
+    document.getElementById('imagem').required = true;
+    const submitBtn = document.querySelector('#form-produto button[type="submit"]');
+    submitBtn.textContent = 'Adicionar Produto';
+});
+
 
 function formatarPreco(preco) {
     return parseFloat(preco).toFixed(2).replace('.', ',');
@@ -247,6 +330,28 @@ document.addEventListener('DOMContentLoaded', () => {
         buscarTotalProdutos();
     }
 });
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    function atualizarTotalVendas() {
+        fetch('http://localhost:3000/api/total-vendas')
+            .then(response => response.json())
+            .then(data => {
+                // Formata para moeda MZN
+              let total = Number(data.total_vendas).toLocaleString('pt-MZ', { style: 'currency', currency: 'MZN', minimumFractionDigits: 2 });
+// Força trocar MTn por MZN, se o navegador usar o símbolo antigo
+total = total.replace('MTn', 'MZN').replace('MT', 'MZN');
+document.getElementById('total_vendas').textContent = total;
+            })
+            .catch(err => {
+                document.getElementById('total_vendas').textContent = 'Erro';
+            });
+    }
+    atualizarTotalVendas();
+});
+
+
 
 
 

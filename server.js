@@ -113,12 +113,79 @@ app.delete('/api/produtos/:id', (req, res) => {
 
 
 
+// PUT para editar produto existente
+app.put('/api/produtos/:id', upload.single('imagem'), (req, res) => {
+    const { nome, descricao, preco, estoque, categoria } = req.body;
+    const { id } = req.params;
+    let setImage = '';
+    let values = [nome, descricao, preco, estoque, categoria];
+
+    if (!nome || !descricao || !preco || !estoque || !categoria) {
+        return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
+    }
+
+    if (req.file) {
+        setImage = ', imagem = ?';
+        values.push(`/uploads/${req.file.filename}`);
+    }
+    values.push(id);
+
+    const sql = `
+        UPDATE produtos
+        SET nome = ?, descricao = ?, preco = ?, estoque = ?, categoria = ?${setImage}
+        WHERE id = ?
+    `;
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Erro ao editar produto:', err);
+            return res.status(500).json({ error: 'Erro ao editar produto.' });
+        }
+        res.json({ message: 'Produto atualizado com sucesso!' });
+    });
+});
+
+// GET para buscar um produto pelo id
+app.get('/api/produtos/id/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = 'SELECT * FROM produtos WHERE id = ?';
+    db.query(sql, [id], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Erro ao buscar produto.' });
+        if (results.length === 0) return res.status(404).json({ error: 'Produto não encontrado.' });
+        res.json(results[0]);
+    });
+});
 
 
 
 
 
 
+
+app.get('/api/estoque', (req, res) => {
+    const { categoria } = req.query;
+    let sql = 'SELECT id, nome, preco, estoque, categoria FROM produtos';
+    let params = [];
+    if (categoria && categoria !== 'todas') {
+        sql += ' WHERE categoria = ?';
+        params.push(categoria);
+    }
+    sql += ' ORDER BY nome';
+    db.query(sql, params, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar estoque:', err);
+            return res.status(500).json({ error: 'Erro ao buscar estoque.' });
+        }
+        res.status(200).json(results);
+    });
+});
+
+// Rota para listar categorias distintas
+app.get('/api/categorias', (req, res) => {
+    db.query('SELECT DISTINCT categoria FROM produtos ORDER BY categoria', (err, results) => {
+        if (err) return res.status(500).json({ error: 'Erro ao buscar categorias.' });
+        res.json(results.map(r => r.categoria));
+    });
+});
 
 
 
@@ -308,6 +375,9 @@ app.post('/api/login-funcionario', (req, res) => {
         if (funcionario.status && funcionario.status.toLowerCase() === 'inativo')
             return res.status(403).json({ error: 'Funcionário inativo.' });
 
+        // Adiciona à lista de online
+        addFuncionarioOnline(funcionario);
+
         // Retorna dados sem a senha
         const { senha: s, ...dados } = funcionario;
         res.json({ funcionario: dados });
@@ -326,6 +396,14 @@ app.post('/api/login-funcionario', (req, res) => {
 
 
 
+function getDataAtualMaputo() {
+    const date = new Date();
+    // Ajusta para o fuso horário de Maputo (UTC+2)
+    const maputoTime = new Date(date.toLocaleString('en-US', { timeZone: 'Africa/Maputo' }));
+    // Formato: YYYY-MM-DD HH:MM:SS
+    const pad = n => n.toString().padStart(2, '0');
+    return `${maputoTime.getFullYear()}-${pad(maputoTime.getMonth() + 1)}-${pad(maputoTime.getDate())} ${pad(maputoTime.getHours())}:${pad(maputoTime.getMinutes())}:${pad(maputoTime.getSeconds())}`;
+}
 
 
 
@@ -335,8 +413,9 @@ app.post('/api/login-funcionario', (req, res) => {
 //PEDIDOS
 
 
+
 app.post('/api/pedidos', (req, res) => {
-    const { clienteEmail, itens, data } = req.body;
+    const { clienteEmail, itens } = req.body;
 
     if (!clienteEmail || !Array.isArray(itens) || itens.length === 0) {
         return res.status(400).json({ error: 'Dados do pedido incompletos.' });
@@ -356,12 +435,15 @@ app.post('/api/pedidos', (req, res) => {
         const clienteId = resultadoCliente[0].id;
         const totalPedido = itens.reduce((soma, i) => soma + (i.preco * i.quantidade), 0);
 
+        // Gera data/hora de Maputo
+        const dataPedido = getDataAtualMaputo();
+
         // Inserir novo pedido
         const inserePedido = `
             INSERT INTO pedidos (cliente_id, data, status, total)
             VALUES (?, ?, 'Pendente', ?)
         `;
-        db.query(inserePedido, [clienteId, data, totalPedido], (err, resultadoPedido) => {
+        db.query(inserePedido, [clienteId, dataPedido, totalPedido], (err, resultadoPedido) => {
             if (err) {
                 console.error('Erro ao salvar pedido:', err);
                 return res.status(500).json({ error: 'Erro ao salvar pedido.' });
@@ -426,36 +508,34 @@ app.get('/api/pedidos-cliente', (req, res) => {
 
 
 // Listar todos os pedidos (para painel do funcionário)
-// Rota para funcionário listar todos os pedidos com nome do cliente e itens
+
 app.get('/api/pedidos', (req, res) => {
     const sql = `
-      SELECT p.id, c.nome AS cliente, c.email, c.celular AS telefone, p.data, p.status, p.total
+      SELECT p.id, c.nome AS cliente, c.email, c.celular AS telefone, p.data, p.status, p.total, p.data_entregue
       FROM pedidos p
       JOIN clientes c ON p.cliente_id = c.id
       ORDER BY p.data DESC
     `;
     db.query(sql, (err, pedidos) => {
         if (err) return res.status(500).json({ error: 'Erro ao listar pedidos.' });
-        // Agora busca os itens de cada pedido
         const pedidoIds = pedidos.map(p => p.id);
         if (pedidoIds.length === 0) return res.json([]);
+        // ALTERAÇÃO: buscar também a quantidade dos itens
         const itensSql = `
-          SELECT pedido_id, produto_nome
+          SELECT pedido_id, produto_nome, quantidade
           FROM pedido_itens
           WHERE pedido_id IN (?)
         `;
         db.query(itensSql, [pedidoIds], (err, itens) => {
             if (err) return res.status(500).json({ error: 'Erro ao buscar itens dos pedidos.' });
-            // Agrupa itens por pedido_id
+            // ALTERAÇÃO: montar array de objetos { nome, quantidade }
             const mapaItens = {};
             itens.forEach(i => {
                 if (!mapaItens[i.pedido_id]) mapaItens[i.pedido_id] = [];
-                mapaItens[i.pedido_id].push(i.produto_nome);
+                mapaItens[i.pedido_id].push({ nome: i.produto_nome, quantidade: i.quantidade });
             });
-            // Adiciona os itens no objeto principal
             pedidos.forEach(p => {
                 p.itens = mapaItens[p.id] || [];
-                // Data e hora formatada para o card (opcional)
                 p.hora = new Date(p.data).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             });
             res.json(pedidos);
@@ -463,26 +543,190 @@ app.get('/api/pedidos', (req, res) => {
     });
 });
 
-// Rota para funcionário alterar o status do pedido
+
+
+
+
+
+
 app.put('/api/pedidos/:id/status', (req, res) => {
     const { id } = req.params;
-    const { novoStatus } = req.body;
+    const novoStatus = req.body.novoStatus || req.body.status;
+    const funcionarioId = req.body.funcionarioId;
 
     if (!novoStatus) {
         return res.status(400).json({ error: 'O novo status é obrigatório.' });
     }
-    const sql = 'UPDATE pedidos SET status = ? WHERE id = ?';
-    db.query(sql, [novoStatus, id], (err, result) => {
+
+    db.query('SELECT status FROM pedidos WHERE id = ?', [id], (err, results) => {
         if (err) {
-            console.error('Erro ao atualizar status do pedido:', err);
-            return res.status(500).json({ error: 'Erro ao atualizar status do pedido.' });
+            console.error('Erro ao buscar status do pedido:', err);
+            return res.status(500).json({ error: 'Erro ao buscar status do pedido.' });
         }
-        if (result.affectedRows === 0) {
+        if (results.length === 0) {
             return res.status(404).json({ error: 'Pedido não encontrado.' });
         }
-        res.json({ message: 'Status do pedido atualizado com sucesso!' });
+        const statusAtual = results[0].status;
+
+        if (statusAtual === 'entregue') {
+            return res.status(400).json({ error: 'Não é possível alterar o status de um pedido já entregue.' });
+        }
+
+        let updateSql, updateParams;
+        if (novoStatus === 'entregue') {
+            // Atualiza status, data_entregue e funcionario_id
+            updateSql = 'UPDATE pedidos SET status = ?, data_entregue = NOW(), funcionario_id = ? WHERE id = ?';
+            updateParams = [novoStatus, funcionarioId || null, id];
+        } else {
+            updateSql = 'UPDATE pedidos SET status = ? WHERE id = ?';
+            updateParams = [novoStatus, id];
+        }
+
+        db.query(updateSql, updateParams, (err, result) => {
+            if (err) {
+                console.error('Erro ao atualizar status do pedido:', err);
+                return res.status(500).json({ error: 'Erro ao atualizar status do pedido.' });
+            }
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Pedido não encontrado.' });
+            }
+
+            // --- Lógica para atualizar o estoque ---
+            if (novoStatus === 'entregue') {
+                // 1. Buscar todos os itens do pedido
+                const itensSql = 'SELECT produto_nome, quantidade FROM pedido_itens WHERE pedido_id = ?';
+                db.query(itensSql, [id], (err, itens) => {
+                    if (err) {
+                        console.error('Erro ao buscar itens do pedido:', err);
+                        return res.status(500).json({ error: 'Erro ao buscar itens do pedido.' });
+                    }
+                    if (!itens || itens.length === 0) {
+                        return res.status(400).json({ error: 'Nenhum item encontrado para este pedido.' });
+                    }
+
+                    // 2. Para cada item, atualizar o estoque do produto
+                    let errosEstoque = [];
+                    let atualizacoes = 0;
+                    itens.forEach(item => {
+                        // Atualiza o estoque subtraindo a quantidade
+                        const updateEstoqueSql = 'UPDATE produtos SET estoque = estoque - ? WHERE nome = ?';
+                        db.query(updateEstoqueSql, [item.quantidade, item.produto_nome], (err, result) => {
+                            atualizacoes++;
+                            if (err) {
+                                errosEstoque.push(item.produto_nome);
+                                console.error(`Erro ao atualizar estoque do produto ${item.produto_nome}:`, err);
+                            }
+                            // Quando todas as atualizações terminarem, responder
+                            if (atualizacoes === itens.length) {
+                                if (errosEstoque.length > 0) {
+                                    return res.status(500).json({ 
+                                        error: 'Erro ao atualizar estoque de alguns produtos.', 
+                                        produtos: errosEstoque 
+                                    });
+                                }
+                                return res.json({ mensagem: 'Status do pedido atualizado e estoque ajustado com sucesso!' });
+                            }
+                        });
+                    });
+                });
+            } else {
+                res.json({ mensagem: 'Status do pedido atualizado com sucesso!' });
+            }
+        });
     });
 });
+
+
+
+//Funcionarios ONILINE
+
+
+const funcionariosOnline = []; // [{id, nome, tipo_funcionario}]
+
+function addFuncionarioOnline(funcionario) {
+    if (!funcionariosOnline.some(f => f.id === funcionario.id)) {
+        funcionariosOnline.push({
+            id: funcionario.id,
+            nome: funcionario.nome,
+            tipo_funcionario: funcionario.tipo_funcionario
+        });
+    }
+}
+
+function removeFuncionarioOnline(id) {
+    const idx = funcionariosOnline.findIndex(f => f.id === id);
+    if (idx !== -1) funcionariosOnline.splice(idx, 1);
+}
+
+// --- ROTA PARA LISTAR FUNCIONÁRIOS ONLINE ---
+app.get('/api/funcionarios-online', (req, res) => {
+    res.json(funcionariosOnline);
+});
+
+// --- ROTA PARA LOGOUT DO FUNCIONÁRIO ---
+app.post('/api/logout-funcionario', (req, res) => {
+    const { id } = req.body;
+    if (!id) return res.status(400).json({ error: 'ID do funcionário é obrigatório.' });
+    removeFuncionarioOnline(id);
+    res.json({ message: 'Logout realizado com sucesso!' });
+});
+
+
+
+
+
+
+
+
+
+app.get('/api/total-vendas', (req, res) => {
+    const sql = 'SELECT SUM(valor) AS total_vendas FROM vendas';
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Erro ao calcular total das vendas:', err);
+            return res.status(500).json({ error: 'Erro ao calcular total das vendas.' });
+        }
+        const total = results[0].total_vendas || 0;
+        res.json({ total_vendas: total });
+    });
+});
+
+
+app.get('/api/vendas-mensais', (req, res) => {
+    const sql = `
+        SELECT 
+            DATE_FORMAT(data_venda, '%Y-%m') AS mes,
+            SUM(valor) AS total
+        FROM vendas
+        WHERE YEAR(data_venda) = YEAR(CURDATE())
+        GROUP BY mes
+        ORDER BY mes
+    `;
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar vendas mensais:', err);
+            return res.status(500).json({ error: 'Erro ao buscar vendas mensais.' });
+        }
+        res.json(results);
+    });
+});
+
+
+
+app.get('/api/notificacoes-estoque-50', (req, res) => {
+    const sql = 'SELECT id, nome, estoque FROM produtos WHERE estoque = 50';
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar notificações de estoque:', err);
+            return res.status(500).json({ error: 'Erro ao buscar notificações de estoque.' });
+        }
+        res.json(results);
+    });
+});
+
+
+
+
 
 
 

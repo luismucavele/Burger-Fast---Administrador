@@ -11,22 +11,6 @@ function toggleSenha(btn) {
         icone.classList.remove('bi-eye-slash-fill');
     }
 }
-function validarLogin(e) {
-    e.preventDefault();
-    const user = document.getElementById('usuario').value.trim();
-    const pass = document.getElementById('senha').value.trim();
-    const msg = document.getElementById('mensagem-erro');
-    if (!user || !pass) {
-        msg.textContent = 'Por favor, preencha o usuário e a senha.';
-        msg.style.display = 'block';
-        return false;
-    } else {
-        msg.style.display = 'none';
-        // Aqui você faria a autenticação real
-        alert('Login solicitado para: ' + user); // remove isso depois
-        return false;
-    }
-}
 
 
 
@@ -75,6 +59,7 @@ async function validarLogin(e) {
         mostrarMensagem('Por favor, preencha o usuário e a senha.', 'erro');
         return false;
     }
+
     try {
         const res = await fetch('http://localhost:3000/api/login-funcionario', {
             method: 'POST',
@@ -87,17 +72,19 @@ async function validarLogin(e) {
             mostrarMensagem(data.error || 'Erro desconhecido. Tente novamente.', 'erro');
             return false;
         }
+
+        // Salva os dados do funcionário no localStorage
+        localStorage.setItem('funcionarioId', data.funcionario.id);
+        localStorage.setItem('funcionarioNome', data.funcionario.nome);
+        localStorage.setItem('tipoFuncionario', data.funcionario.tipo_funcionario);
+
         // Login correto; redireciona conforme o tipo_funcionario
         mostrarMensagem('Login realizado com sucesso! Redirecionando...', 'sucesso');
         setTimeout(() => {
             if (data.funcionario.tipo_funcionario === 'Gerente') {
-                localStorage.setItem('gerente_nome', data.funcionario.nome);
                 window.location.href = 'admin.html';
             } else if (data.funcionario.tipo_funcionario === 'Atendente') {
-                localStorage.setItem('funcionario_nome', data.funcionario.nome);
                 window.location.href = 'funcionario.html';
-            }else if (data.funcionario.tipo_funcionario === 'Moto Boy') {
-                window.location.href = 'motoboy.html';
             }else {
                 mostrarMensagem('Tipo de funcionário não reconhecido.', 'erro');
             }

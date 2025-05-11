@@ -29,7 +29,7 @@
                 <button class="item-menu" onclick="mostrarTela('funcionarios')"> <i class="bi bi-person-badge" style="font-size: 25px;"></i> Gerenciar Funcionários</button>
                 <button class="item-menu" onclick="mostrarTela('categorias')"> <i class="bi bi-shop-window" style="font-size: 25px;"></i> Gerenciar categorias</button>
                 <button class="item-menu" onclick="mostrarTela('vendas')"> <i class="bi bi-clipboard-data" style="font-size: 25px;"></i> Relatório de Vendas</button>
-                <button class="item-menu"  onclick="logoutFuncionario()" title="Sair"> <i class="bi bi-box-arrow-right" style="font-size: 25px;"></i> Sair</button>
+                <button class="item-menu"  onclick="logoutFuncionario()" onclick="sair()" title="Sair"> <i class="bi bi-box-arrow-right" style="font-size: 25px;"></i> Sair</button>
               
             </nav>
         </aside>
@@ -55,11 +55,7 @@
                                 <span id="contador-carrinho">0</span>
                               </div>
                         </a>
-                        <a href="#">
-                            <div class="perfil-icon">
-                                <i class="bi bi-person-circle"></i>
-                            </div>
-                        </a>
+                     
                         
                     </div>
                 </header>
@@ -85,7 +81,7 @@
                                 <i class="fas fa-tags"></i>
                             </div>
                         </div>
-                        <div class="valor-principal">0</div>
+                        <div class="valor-principal" id="total_categorias">0</div>
                     </div>
             
                     <!-- Cartão de Funcionários -->
@@ -107,16 +103,27 @@
                                 <i class="fas fa-dollar-sign"></i>
                             </div>
                         </div>
-                        <div class="valor-principal">0,00 MZN</div>
+                        <div class="valor-principal" id="total_vendas">0,00 MZN</div>
                     </div>
             
                     
                 </div>
 
-               <div class="linha">
-                <h2>Funcionarios online</h2> <i class="bi bi-circle-fill"></i>
-               </div>
-               <hr style="border: 1px solid rgb(173, 173, 173); width: 100%;">
+                            <div class="linha">
+                    <h2>Funcionários online</h2> <i class="bi bi-circle-fill"></i>
+                </div>
+                <hr style="border: 1px solid rgb(173, 173, 173); width: 100%;">
+                <table id="tabela-funcionarios-online" style="width: 100%; margin-top: 10px;">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Cargo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Linhas serão preenchidas via JS -->
+                    </tbody>
+                </table>
 
             </section>
 
@@ -231,7 +238,6 @@
                                 <option value="" disabled selected>Selecione o tipo</option>
                                 <option value="Chef principal">Chef principal</option>
                                 <option value="Chef secundario">Chef secundário</option>
-                                <option value="Moto Boy">Moto Boy</option>
                                 <option value="Gerente">Gerente</option>
                                 <option value="Recepcionista">Recepcionista</option>
                                 <option value="Atendente">Atendente</option>
@@ -339,11 +345,10 @@
 
 
             <!-- Tela de Relatório de Vendas -->
-            <section id="vendas" class="tela" style="display: none;">
-                <h1>Relatório de Vendas</h1>
-                <p>Exibir relatórios de vendas aqui.</p>
-            </section>
-
+           <section id="vendas" class="tela" style="display: none;">
+    <h1>Relatório de Vendas</h1>
+    <canvas id="grafico-vendas" width="500" height="200"></canvas>
+</section>
           
         </main>
     </div>
@@ -351,6 +356,7 @@
     <!-- Container de mensagens de erro -->
 <div class="mensagens-container"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
  
     <script src="js/admin/funcionarios.js"></script>
@@ -358,5 +364,9 @@
     <script src="js/admin/gerenciar-produto.js"></script>
     <script src="js/admin/troca-telas.js"></script>
     <script src="authentication/nomeusuario.js"></script>
+    <script src="js/funcio/funcionario-online.js"></script>
+    <script src="authentication/sair.js"></script>
+    <script src="js/admin/grafico-vendas.js"></script>
+    <script src="js/admin/notificacao-estoque.js"></script>
 </body>
 </html>

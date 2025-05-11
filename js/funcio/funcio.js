@@ -82,7 +82,17 @@ function renderPedidos() {
         return;
     }
     let pedidosRender = pedidos;
-    // Filtros
+
+    // --- FILTRO: Remove pedidos entregues há mais de 1 minuto ---
+    const agora = Date.now();
+    pedidosRender = pedidosRender.filter(p => {
+        if (p.status !== 'entregue') return true;
+        if (!p.data_entregue) return true; // Se não veio a data, mostra
+        const dataEntregue = new Date(p.data_entregue).getTime();
+        return (agora - dataEntregue) < 60000; // 60.000 ms = 1 min
+    });
+
+    // Filtros existentes
     if (filtroAba !== 'todos')
         pedidosRender = pedidosRender.filter(p => p.status === filtroAba);
     if (filtroBusca.trim())
@@ -98,7 +108,17 @@ function renderPedidos() {
     lista.innerHTML = pedidosRender.map(pedidoCardHTML).join('');
 }
 
+
 function pedidoCardHTML(p) {
+    function formatarValor(valor) {
+        return `MZN ${Number(valor).toLocaleString('pt-MZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    // Monta string dos itens com quantidade
+    const itensStr = (p.itens && p.itens.length)
+        ? p.itens.map(item => `${item.nome} (${item.quantidade})`).join(', ')
+        : '-';
+
     return `
     <div class="pedido-card${pedidoSelecionadoId === p.id ? ' selecionado' : ''}" data-id="${p.id}" onclick="selecionarPedido(${p.id})">
         <div>
@@ -107,7 +127,10 @@ function pedidoCardHTML(p) {
         </div>
         <div class="pedido-itens">
             <span><i class="bi bi-list"></i> Itens:</span>
-            <span>${(p.itens && p.itens.length) ? p.itens.join(', ') : '-'}</span>
+            <span>${itensStr}</span>
+        </div>
+        <div class="pedido-valor">
+            <span><i class="bi bi-cash"></i> <b>Valor Total:</b> ${formatarValor(p.total)}</span>
         </div>
         <div class="status-pedido-flow">
             ${STATUS_FLUXO.map(st =>
@@ -120,7 +143,6 @@ function pedidoCardHTML(p) {
     </div>
     `;
 }
-
 
 function mudarStatusPedidoViaAba(status) {
     if (!pedidoSelecionadoId) {
@@ -149,15 +171,35 @@ function mudarStatusPedidoViaAba(status) {
 function editarStatusPedido(id) {
     const pedido = pedidos.find(p => p.id === id);
     if (!pedido) return;
-    let novoStatus;
     let atualIdx = STATUS_FLUXO.indexOf(pedido.status);
+    let novoStatus;
     if (atualIdx < STATUS_FLUXO.length - 1) novoStatus = STATUS_FLUXO[atualIdx + 1];
     else novoStatus = STATUS_FLUXO[0];
-    // Exemplo de integração:
-    // fetch(`/api/pedidos/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status: novoStatus }) })
-    //    .then(resp=>resp.json()).then(...)
-    // Por enquanto só placeholder:
-    alert(`Ao integrar: mudar status do pedido #${id} para "${STATUS_LABEL[novoStatus]}"`);
+
+    // Pega o ID do funcionário logado do localStorage
+    const funcionarioId = localStorage.getItem('funcionarioId');
+
+    // Monta o body do fetch
+    const body = { novoStatus };
+    if (novoStatus === 'entregue' && funcionarioId) {
+        body.funcionarioId = funcionarioId;
+    }
+
+    fetch(`http://localhost:3000/api/pedidos/${id}/status`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(body)
+    })
+    .then(r => r.json())
+    .then(resp => {
+        if (resp.error) {
+            alert('Erro: ' + resp.error);
+        } else {
+            pedido.status = novoStatus;
+            renderPedidos();
+        }
+    })
+    .catch(() => alert('Erro ao atualizar status do pedido'));
 }
 
 // Filtros
@@ -184,20 +226,47 @@ function exibirErroPedidos(msg) {
 
 
 // -- ESTOQUE --
+// -- ESTOQUE --
+
+let categoriasEstoque = [];
+let categoriaSelecionada = 'todas';
+
+function carregarCategoriasEstoque() {
+    fetch('http://localhost:3000/api/categorias')
+        .then(r => r.json())
+        .then(categorias => {
+            categoriasEstoque = categorias;
+            renderCategoriasEstoque();
+        });
+}
+
+function renderCategoriasEstoque() {
+    const select = document.getElementById('estoque-categoria-select');
+    if (!select) return;
+    select.innerHTML = `<option value="todas">Todas as Categorias</option>` +
+        categoriasEstoque.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+    select.value = categoriaSelecionada;
+}
+
+function onCategoriaEstoqueChange(sel) {
+    categoriaSelecionada = sel.value;
+    carregarEstoque();
+}
 
 function carregarEstoque() {
     exibirLoadingEstoque(true);
-    // Exemplo integração futura:
-    /*
-    fetch('/api/estoque').then(r=>r.json()).then(dados=>{
-        estoque = dados;
-        renderEstoque();
-        exibirLoadingEstoque(false);
-    }).catch(()=>{exibirErroEstoque("Falha ao carregar estoque"); exibirLoadingEstoque(false);});
-    */
-    estoque = [];
-    renderEstoque();
-    exibirLoadingEstoque(false);
+    let url = 'http://localhost:3000/api/estoque';
+    if (categoriaSelecionada && categoriaSelecionada !== 'todas') {
+        url += '?categoria=' + encodeURIComponent(categoriaSelecionada);
+    }
+    fetch(url)
+        .then(r => r.json())
+        .then(dados => {
+            estoque = dados;
+            renderEstoque();
+            exibirLoadingEstoque(false);
+        })
+        .catch(() => { exibirErroEstoque("Falha ao carregar estoque"); exibirLoadingEstoque(false); });
 }
 
 function renderEstoque() {
@@ -207,18 +276,35 @@ function renderEstoque() {
         lista.innerHTML = `<div class="nenhum-resultado-func"><i class="bi bi-archive"></i> Nenhum item no estoque.</div>`;
         return;
     }
-    lista.innerHTML = estoque.map(item => `
-        <div class="estoque-item">
-            <div class="estoque-nome">${item.nome}</div>
-            <div class="estoque-quantidade">
-                Estoque: 
-                <strong class="${item.quantidade <= 10 ? 'estoque-baixo' : ''}">
-                    ${item.quantidade} ${item.quantidade <= 10 ? '(baixo!)' : ''}
-                </strong>
-            </div>
-        </div>
-    `).join('');
+    lista.innerHTML = `
+        <table class="tabela-estoque">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Categoria</th>
+                    <th>Preço</th>
+                    <th>Estoque</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${estoque.map(item => `
+                    <tr>
+                        <td>${item.nome}</td>
+                        <td>${item.categoria}</td>
+                        <td>MZN ${Number(item.preco).toLocaleString('pt-MZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td${item.estoque <= 10 ? ' class="estoque-baixo"' : ''}>${item.estoque}${item.estoque <= 10 ? ' <span style="color:red;">(baixo!)</span>' : ''}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
 }
+
+// Chame carregarCategoriasEstoque() e carregarEstoque() ao abrir a tela de estoque
+document.addEventListener('DOMContentLoaded', () => {
+    // ... outros inits ...
+    carregarCategoriasEstoque();
+});
 
 function exibirLoadingEstoque(flag) {
     const loading = document.getElementById('estoque-loading');
@@ -253,6 +339,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+
+
+
+
 
 window.editarStatusPedido = editarStatusPedido;
 window.filtrarPedidos = filtrarPedidos;

@@ -29,7 +29,7 @@
                 <button class="item-menu" onclick="mostrarTelaFunc('Atendimento')">
                     <i class="bi bi-chat-dots-fill"></i> <span>Atendimento</span>
                 </button>
-                <button class="item-menu"  onclick="logoutFuncionario()" title="Sair"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></button>
+                <button class="item-menu"  onclick="realizarLogout()"   title="Sair"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></button>
             </nav>
         </aside>
 
@@ -37,12 +37,13 @@
         <main class="conteudo-func">
             <!-- PEDIDOS PROFISSIONAL -->
             <section id="Pedidos" class="tela-func">
-                <header>
-                    <div class="identidade-func">
-                        <p>Funcionário:</p> <p id="user-func"></p>
-                    </div>
-                
-                </header>
+                <header class="cabecalho">
+                <div class="perfil">
+                    <i class="bi bi-person-circle">Funcionario: </i>
+                    <span id="user-func">Carregando...</span>
+                </div>
+                <!-- resto do header... -->
+            </header>
 
                 <h3>Pedidos em Tempo Real</h3>
                 <div class="filtros-pedidos">
@@ -62,13 +63,19 @@
                 </div>
             </section>
 
-            <!-- ESTOQUE PROFISSIONAL -->
             <section id="Estoque" class="tela-func" style="display:none;">
-                <h2>Estoque Atual</h2>
-                <div id="estoque-lista" class="profissional-loading-box">
-                    <div class="loading-profissional" id="estoque-loading" style="display:none;">Carregando estoque...</div>
-                </div>
-            </section>
+    <h2>Estoque Atual</h2>
+    <div style="margin-bottom: 12px;">
+        <label for="estoque-categoria-select"><b>Categoria:</b></label>
+        <select id="estoque-categoria-select" onchange="onCategoriaEstoqueChange(this)">
+            <option value="todas">Todas as Categorias</option>
+            <!-- opções dinâmicas -->
+        </select>
+    </div>
+    <div id="estoque-lista" class="profissional-loading-box">
+        <div class="loading-profissional" id="estoque-loading" style="display:none;">Carregando estoque...</div>
+    </div>
+</section>
 
             <!-- ATENDIMENTO -->
             <section id="Atendimento" class="tela-func" style="display:none;">
@@ -84,5 +91,6 @@
     </div>
     <script src="js/funcio/funcio.js"></script>
     <script src="authentication/nomeusuario.js"></script>
+    <script src="authentication/sair.js"></script>
 </body>
 </html>  
