@@ -232,14 +232,10 @@ form button:hover {
   background-color: #fff;
 }
 
-.produto-item:hover {
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  transform: translateY(-3px);
-}
 
 .produto-item img {
-  width: 100%;
-  height: 180px;
+  width: 200px;
+  height: 190px;
   object-fit: cover;
   border-radius: 4px;
   margin-bottom: 10px;
@@ -252,7 +248,7 @@ form button:hover {
 
 .produto-item p {
   margin: 5px 0;
-  color: #666;
+  color: #302f2f;
 }
 
 .acoes-produto {

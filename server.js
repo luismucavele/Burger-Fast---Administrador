@@ -4,7 +4,6 @@ const cors = require('cors');
 const mysql = require('mysql');
 const multer = require('multer');
 const path = require('path');
-
 const app = express();
 const PORT = 3000;
 
@@ -50,7 +49,7 @@ db.connect(err => {
 
 
 
-// Adicionar produto
+// === Adicionar produtos === //
 app.post('/api/produtos', upload.single('imagem'), (req, res) => {
     const { nome, descricao, preco, estoque, categoria } = req.body;
     const imagem = req.file ? `/uploads/${req.file.filename}` : null;
@@ -98,9 +97,6 @@ app.get('/api/produtos/:categoria', (req, res) => {
     });
 });
 
-
-
-
 // Deletar produto
 app.delete('/api/produtos/:id', (req, res) => {
     const { id } = req.params;
@@ -110,8 +106,6 @@ app.delete('/api/produtos/:id', (req, res) => {
         res.send('Produto deletado com sucesso!');
     });
 });
-
-
 
 // PUT para editar produto existente
 app.put('/api/produtos/:id', upload.single('imagem'), (req, res) => {
@@ -155,12 +149,6 @@ app.get('/api/produtos/id/:id', (req, res) => {
     });
 });
 
-
-
-
-
-
-
 app.get('/api/estoque', (req, res) => {
     const { categoria } = req.query;
     let sql = 'SELECT id, nome, preco, estoque, categoria FROM produtos';
@@ -195,7 +183,17 @@ app.get('/api/categorias', (req, res) => {
 
 
 
-//LOGIN DO CLENTE 
+
+
+
+
+
+
+
+
+
+
+// === Login do Cliente === //
 
 // Rota para registrar um novo cliente
 app.post('/api/register', (req, res) => {
@@ -238,22 +236,6 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Perfil do cliente
-
 // Rota para atualizar os dados do cliente
 app.put('/api/atualizar-cliente', (req, res) => {
     const { email, nome, celular, endereco } = req.body;
@@ -293,7 +275,8 @@ app.put('/api/atualizar-cliente', (req, res) => {
 
 
 
-/* === ROTAS FUNCIONÁRIOS === */
+
+// === ROTAS FUNCIONÁRIOS === //
 
 // Listar todos
 app.get('/api/funcionarios', (req, res) => {
@@ -396,23 +379,12 @@ app.post('/api/login-funcionario', (req, res) => {
 
 
 
-function getDataAtualMaputo() {
-    const date = new Date();
-    // Ajusta para o fuso horário de Maputo (UTC+2)
-    const maputoTime = new Date(date.toLocaleString('en-US', { timeZone: 'Africa/Maputo' }));
-    // Formato: YYYY-MM-DD HH:MM:SS
-    const pad = n => n.toString().padStart(2, '0');
-    return `${maputoTime.getFullYear()}-${pad(maputoTime.getMonth() + 1)}-${pad(maputoTime.getDate())} ${pad(maputoTime.getHours())}:${pad(maputoTime.getMinutes())}:${pad(maputoTime.getSeconds())}`;
-}
 
 
 
 
 
-
-//PEDIDOS
-
-
+// === PEDIDOS === //
 
 app.post('/api/pedidos', (req, res) => {
     const { clienteEmail, itens } = req.body;
@@ -471,12 +443,14 @@ app.post('/api/pedidos', (req, res) => {
 });
 
 
-
-
-
-
-
-
+function getDataAtualMaputo() {
+    const date = new Date();
+    // Ajusta para o fuso horário de Maputo (UTC+2)
+    const maputoTime = new Date(date.toLocaleString('en-US', { timeZone: 'Africa/Maputo' }));
+    // Formato: YYYY-MM-DD HH:MM:SS
+    const pad = n => n.toString().padStart(2, '0');
+    return `${maputoTime.getFullYear()}-${pad(maputoTime.getMonth() + 1)}-${pad(maputoTime.getDate())} ${pad(maputoTime.getHours())}:${pad(maputoTime.getMinutes())}:${pad(maputoTime.getSeconds())}`;
+}
 
 // Listar pedidos do cliente por email (para painel do cliente)
 app.get('/api/pedidos-cliente', (req, res) => {
@@ -500,14 +474,7 @@ app.get('/api/pedidos-cliente', (req, res) => {
 
 
 
-
-
-
-
-
-
-
-// Listar todos os pedidos (para painel do funcionário)
+// === Listar pedidos no painel de funcionario=== //
 
 app.get('/api/pedidos', (req, res) => {
     const sql = `
@@ -542,11 +509,6 @@ app.get('/api/pedidos', (req, res) => {
         });
     });
 });
-
-
-
-
-
 
 
 app.put('/api/pedidos/:id/status', (req, res) => {
@@ -638,8 +600,18 @@ app.put('/api/pedidos/:id/status', (req, res) => {
 
 
 
-//Funcionarios ONILINE
 
+
+
+
+
+
+
+
+
+
+
+// --- ROTA PARA BUSCAR FUNCIONÁRIOS ONLINE ---
 
 const funcionariosOnline = []; // [{id, nome, tipo_funcionario}]
 
@@ -679,6 +651,12 @@ app.post('/api/logout-funcionario', (req, res) => {
 
 
 
+
+
+
+
+
+// === VENDAS === //
 app.get('/api/total-vendas', (req, res) => {
     const sql = 'SELECT SUM(valor) AS total_vendas FROM vendas';
     db.query(sql, (err, results) => {
@@ -690,7 +668,6 @@ app.get('/api/total-vendas', (req, res) => {
         res.json({ total_vendas: total });
     });
 });
-
 
 app.get('/api/vendas-mensais', (req, res) => {
     const sql = `
@@ -710,8 +687,6 @@ app.get('/api/vendas-mensais', (req, res) => {
         res.json(results);
     });
 });
-
-
 
 app.get('/api/notificacoes-estoque-50', (req, res) => {
     const sql = 'SELECT id, nome, estoque FROM produtos WHERE estoque = 50';

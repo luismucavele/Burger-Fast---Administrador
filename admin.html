@@ -41,6 +41,7 @@
 
 
         <!-- Conteúdo principal -->
+
         <main class="conteudo">
             <!-- Tela de Dashboard -->
             <section id="Painel" class="tela">
@@ -55,12 +56,11 @@
                                 <span id="contador-carrinho">0</span>
                               </div>
                         </a>
-                     
-                        
                     </div>
                 </header>
 
               
+
                 <div class="area-cartoes">
                     <!-- Cartão de Produtos -->
                     <div class="cartao cartao-produtos">
@@ -105,11 +105,10 @@
                         </div>
                         <div class="valor-principal" id="total_vendas">0,00 MZN</div>
                     </div>
-            
-                    
                 </div>
 
-                            <div class="linha">
+
+                 <div class="linha">
                     <h2>Funcionários online</h2> <i class="bi bi-circle-fill"></i>
                 </div>
                 <hr style="border: 1px solid rgb(173, 173, 173); width: 100%;">
@@ -124,7 +123,6 @@
                         <!-- Linhas serão preenchidas via JS -->
                     </tbody>
                 </table>
-
             </section>
 
 
@@ -135,7 +133,7 @@
 
             <!-- Tela de Gerenciar Produtos -->
             <section id="produtos" class="tela" style="display: none;">
-
+                
                 <div class="container-produtos ">
                     <h1>Gerenciar Produtos</h1>
 
@@ -304,9 +302,6 @@
                         </tbody>
                         </table>
                     </div>
-  
-
-                
             </form>
 
 
@@ -329,7 +324,6 @@
                             
                             <input type="file" id="imagem-categoria" required />
                             <button type="submit">Adicionar categoria</button>
-                            
                         </div>
                       
                     </form>
@@ -340,15 +334,16 @@
                 </div>
             </section>
 
+              
 
 
 
 
             <!-- Tela de Relatório de Vendas -->
            <section id="vendas" class="tela" style="display: none;">
-    <h1>Relatório de Vendas</h1>
-    <canvas id="grafico-vendas" width="500" height="200"></canvas>
-</section>
+                <h1>Relatório de Vendas</h1>
+                 <canvas id="grafico-vendas" width="500" height="200"></canvas>
+            </section>
           
         </main>
     </div>
@@ -356,9 +351,7 @@
     <!-- Container de mensagens de erro -->
 <div class="mensagens-container"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
- 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/admin/funcionarios.js"></script>
     <script src="js/admin/gerenciar-categoria.js"></script>
     <script src="js/admin/gerenciar-produto.js"></script>

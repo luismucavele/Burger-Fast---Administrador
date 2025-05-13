@@ -1,3 +1,4 @@
+
 let funcionarioSelecionado = null;
 let linhaSelecionada = null; // Para destacar linha na tabela
 
@@ -23,6 +24,27 @@ function criarContainerMensagens() {
     container.className = 'mensagens-container';
     document.body.appendChild(container);
     return container;
+}
+
+// Funções de validação
+function validarNome(nome) {
+    // Aceita letras (com ou sem acento) e espaços, pelo menos 2 caracteres
+    return /^[A-Za-zÀ-ÿ\s]{4,}$/.test(nome);
+}
+
+function validarCelular(celular) {
+    // Moçambicano: começa com 82, 83, 84, 85, 86, 87 ou 88 e mais 7 dígitos
+    return /^(82|83|84|85|86|87|88)\d{7}$/.test(celular);
+}
+
+function validarNuit(nuit) {
+    // Exatamente 9 dígitos
+    return /^\d{9}$/.test(nuit);
+}
+
+function validarBI(bi) {
+    // 11 dígitos + 1 letra (total 12 caracteres)
+    return /^\d{11}[A-Za-z]$/.test(bi);
 }
 
 // Carregar funcionários
@@ -99,19 +121,42 @@ async function cadastrarFuncionario(event) {
             throw new Error('Preencha todos os campos obrigatórios');
         }
 
+        // Validações específicas
+        const nome = document.getElementById('nome-funcionario').value.trim();
+        const telefone = document.getElementById('telefone').value.trim();
+        const nuit = document.getElementById('nuit').value.trim();
+        const numero_bi = document.getElementById('numero-bi').value.trim();
+
+        if (!validarNome(nome)) {
+            mostrarMensagem('O nome deve conter apenas letras e ter pelo menos 2 caracteres.', 'erro');
+            return;
+        }
+        if (!validarCelular(telefone)) {
+            mostrarMensagem('O celular deve ser moçambicano e ter o formato correto, ex: 841234567.', 'erro');
+            return;
+        }
+        if (nuit && !validarNuit(nuit)) {
+            mostrarMensagem('O NUIT deve conter exatamente 9 dígitos numéricos.', 'erro');
+            return;
+        }
+        if (numero_bi && !validarBI(numero_bi)) {
+            mostrarMensagem('O BI deve conter 11 números seguidos de 1 letra. Ex: 12345678901A', 'erro');
+            return;
+        }
+
         // Obter dados do formulário
         const funcionario = {
-            nome: document.getElementById('nome-funcionario').value.trim(),
+            nome,
             usuario: document.getElementById('usuario').value.trim(),
             senha: document.getElementById('senha').value.trim(),
             salario: parseFloat(document.getElementById('salario').value),
             sexo: document.getElementById('sexo').value,
             residencia: document.getElementById('residencia').value.trim(),
-            nuit: document.getElementById('nuit').value.trim(),
+            nuit,
             tipo_funcionario: document.getElementById('tipo-funcionario').value,
-            telefone: document.getElementById('telefone').value.trim(),
+            telefone,
             email: document.getElementById('email').value.trim(),
-            numero_bi: document.getElementById('numero-bi').value.trim(),
+            numero_bi,
             status: document.getElementById('status').value
         };
 
@@ -204,19 +249,42 @@ async function atualizarFuncionario() {
             throw new Error('Preencha todos os campos obrigatórios');
         }
 
+        // Validações específicas
+        const nome = document.getElementById('nome-funcionario').value.trim();
+        const telefone = document.getElementById('telefone').value.trim();
+        const nuit = document.getElementById('nuit').value.trim();
+        const numero_bi = document.getElementById('numero-bi').value.trim();
+
+        if (!validarNome(nome)) {
+            mostrarMensagem('O nome deve conter apenas letras e ter pelo menos 2 caracteres.', 'erro');
+            return;
+        }
+        if (!validarCelular(telefone)) {
+            mostrarMensagem('O celular deve ser moçambicano e ter o formato correto, ex: 841234567.', 'erro');
+            return;
+        }
+        if (nuit && !validarNuit(nuit)) {
+            mostrarMensagem('O NUIT deve conter exatamente 9 dígitos numéricos.', 'erro');
+            return;
+        }
+        if (numero_bi && !validarBI(numero_bi)) {
+            mostrarMensagem('O BI deve conter 11 números seguidos de 1 letra. Ex: 12345678901A', 'erro');
+            return;
+        }
+
         // Obter dados do formulário
         const funcionario = {
-            nome: document.getElementById('nome-funcionario').value.trim(),
+            nome,
             usuario: document.getElementById('usuario').value.trim(),
             senha: document.getElementById('senha').value.trim(),
             salario: parseFloat(document.getElementById('salario').value),
             sexo: document.getElementById('sexo').value,
             residencia: document.getElementById('residencia').value.trim(),
-            nuit: document.getElementById('nuit').value.trim(),
+            nuit,
             tipo_funcionario: document.getElementById('tipo-funcionario').value,
-            telefone: document.getElementById('telefone').value.trim(),
+            telefone,
             email: document.getElementById('email').value.trim(),
-            numero_bi: document.getElementById('numero-bi').value.trim(),
+            numero_bi,
             status: document.getElementById('status').value
         };
 

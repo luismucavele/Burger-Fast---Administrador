@@ -23,6 +23,11 @@ body {
     border-bottom-right-radius: 15px;
     border-top-right-radius: 15px;
     padding: 10px 0px 10px 10px;
+     position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 100;
 }
 
 .cabecalho-painel img{
@@ -62,6 +67,7 @@ body {
     padding: 28px 3vw;
     background: #F5EBDC;
     min-height: 100vh;
+      margin-left: 250px;
 }
 header {
     display: flex;

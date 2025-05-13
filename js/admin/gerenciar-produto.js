@@ -1,72 +1,4 @@
-document.getElementById('form-produto').addEventListener('submit', function (e) {
-    e.preventDefault();
-    
-    // Validação básica dos campos
-    const nome = document.getElementById('nome-produto').value.trim();
-    const preco = document.getElementById('preco').value.trim();
-    const categoria = document.getElementById('categoria').value;
-    const imagemInput = document.getElementById('imagem');
-    
-    if (!nome) {
-        mostrarMensagem('O nome do produto é obrigatório', 'erro');
-        return;
-    }
-    
-    if (!preco || isNaN(parseFloat(preco))) {
-        mostrarMensagem('Informe um preço válido', 'erro');
-        return;
-    }
-    
-    if (!categoria) {
-        mostrarMensagem('Selecione uma categoria', 'erro');
-        return;
-    }
-    
-    // Verificar se uma imagem foi selecionada
-    if (imagemInput.files.length === 0) {
-        mostrarMensagem('Selecione uma imagem para o produto', 'erro');
-        return;
-    }
 
-    // Mostrar indicador de carregamento
-    const submitBtn = document.querySelector('#form-produto button[type="submit"]');
-    const btnTextoOriginal = submitBtn.innerHTML;
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Salvando...';
-
-    const formData = new FormData();
-    formData.append('nome', nome);
-    formData.append('descricao', document.getElementById('descricao').value.trim());
-    formData.append('preco', preco);
-    formData.append('estoque', document.getElementById('estoque').value);
-    formData.append('categoria', categoria);
-    formData.append('imagem', imagemInput.files[0]);
-
-    fetch('http://localhost:3000/api/produtos', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Erro ${response.status}: ${response.statusText}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        mostrarMensagem(data.message, 'sucesso');
-        document.getElementById('form-produto').reset();
-        carregarProdutos();
-    })
-    .catch(err => {
-        console.error('Erro ao adicionar produto:', err);
-        mostrarMensagem('Erro ao adicionar produto. Tente novamente.', 'erro');
-    })
-    .finally(() => {
-        // Restaurar botão
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = btnTextoOriginal;
-    });
-});
 
 function carregarProdutos() {
     const categoria = document.getElementById('categoria').value;
@@ -123,11 +55,17 @@ function carregarProdutos() {
         });
 }
 
+
+
+
 function confirmarExclusao(id, nome) {
     if (confirm(`Tem certeza que deseja excluir o produto "${nome}"?`)) {
         deletarProduto(id);
     }
 }
+
+
+
 
 function deletarProduto(id) {
     // Mostrar indicador de carregamento no item
@@ -178,6 +116,9 @@ function deletarProduto(id) {
     });
 }
 
+
+
+
 let produtoEmEdicao = null;
 
 // Função chamada pelo botão Editar em cada produto
@@ -199,6 +140,9 @@ function editarProduto(id) {
         })
         .catch(() => mostrarMensagem('Erro ao carregar produto.', 'erro'));
 }
+
+
+
 
 document.getElementById('form-produto').addEventListener('submit', function (e) {
     e.preventDefault();
